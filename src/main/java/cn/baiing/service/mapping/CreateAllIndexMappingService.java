@@ -27,6 +27,12 @@ public class CreateAllIndexMappingService {
 	@Autowired
 	private CreateKlgNumericIndexMappingService createKlgNumericIndexMappingService;
 	
+	@Autowired
+	private CreateTemplateIndexMappingService createTemplateIndexMappingService;
+	
+	@Autowired
+	private CreateTemplateKeyIndexMappingService createTemplateKeyIndexMappingService;
+	
 	@SuppressWarnings("static-access")
 	public void createAllIndexMapping(){
 		try {
@@ -46,6 +52,18 @@ public class CreateAllIndexMappingService {
 			createKlgNumericIndexMappingService.createNumericIndexMapping();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("static-access")
+	public void createTemplateAttrsIndexMapping(){
+		try {
+			//创建模板mapping
+			createTemplateIndexMappingService.createTemplateIndexMapping();
+			//创建模板属性mapping
+			createTemplateKeyIndexMappingService.createTemplateIndexMapping();
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 	}
 }

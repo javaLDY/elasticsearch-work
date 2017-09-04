@@ -17,4 +17,9 @@ public class StartPutAllDataToEsController {
 	public void startPutAllDataToEsService(){
 		startPutAllDataToEsService.startPullAllDataToEs();
 	}
+	
+	@RequestMapping("/startPutAllTemplateAttrsToService")
+	public void startPutAllTemplateAttrsToService(){
+		startPutAllDataToEsService.startPutAllTemplateAttrsToEs();
+	}
 }

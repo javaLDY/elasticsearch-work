@@ -17,4 +17,9 @@ public class StartCreateAllIndexMappingController {
 	public void createAllIndexMappingService(){
 		createAllIndexMappingService.createAllIndexMapping();
 	}
+	
+	@RequestMapping("createTemplateAttrsIndexMapping")
+	public void createTemplateAttrsIndexMapping(){
+		createAllIndexMappingService.createTemplateAttrsIndexMapping();
+	}
 }

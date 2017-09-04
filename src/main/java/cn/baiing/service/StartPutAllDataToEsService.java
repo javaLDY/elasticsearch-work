@@ -14,6 +14,8 @@ import cn.baiing.service.index.PutKnowledgeNumericToEsService;
 import cn.baiing.service.index.PutKnowledgeSmsToEsService;
 import cn.baiing.service.index.PutKnowledgeTextToEsService;
 import cn.baiing.service.index.PutKnowledgesToEsService;
+import cn.baiing.service.index.PutTemplateKeyToEsService;
+import cn.baiing.service.index.PutTemplateToEsService;
 
 @Service
 public class StartPutAllDataToEsService {
@@ -38,6 +40,12 @@ public class StartPutAllDataToEsService {
 	
 	@Autowired
 	private KnowledgeTextAttributesService knowledgeTextAttributesService;
+	
+	@Autowired
+	private TemplateService templateService;
+	
+	@Autowired
+	private TemplateKeyService templateKeyService;
 	///////////////////////////////////////////////////灌入es Service///////////////////////////////////////
 	@Autowired
 	private PutKnowledgesToEsService putKnowledgesToEsService;
@@ -60,6 +68,15 @@ public class StartPutAllDataToEsService {
 	@Autowired
 	private PutKnowledgeTextToEsService putKnowledgeTextToEsService;
 	
+	@Autowired
+	private PutTemplateToEsService putTemplateToEsService;
+	
+	@Autowired
+	private PutTemplateKeyToEsService putTemplateKeyToEsService;
+	
+	/**
+	 * 灌入知识主题和知识相关属性的数据
+	 */
 	public void startPullAllDataToEs(){
 		int startPos = 0;
 		int pageSize = 5000;
@@ -116,5 +133,21 @@ public class StartPutAllDataToEsService {
 		
 		System.out.println("总共拉取了:" + totalSize);
 		System.out.println("总共花了:" + (endTime - startTime) + "ms");
+	}
+	
+	/**
+	 * 灌入模板和模板属性数据
+	 */
+	public void startPutAllTemplateAttrsToEs(){
+		//灌入模板数据
+		List<Map<String, Object>> templates = templateService.getTemplates();
+		if(CollectionUtils.isNotEmpty(templates)){
+			putTemplateToEsService.bulkPutTemplateToEs(templates);
+		}
+		
+		List<Map<String, Object>> templateKeys = templateKeyService.getTemplateKeys();
+		if(CollectionUtils.isNotEmpty(templateKeys)){
+			putTemplateKeyToEsService.bulkPutTemplateKeysToEs(templateKeys);
+		}
 	}
 }

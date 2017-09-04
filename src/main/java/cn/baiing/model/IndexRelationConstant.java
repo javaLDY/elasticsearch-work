@@ -33,5 +33,13 @@ public class IndexRelationConstant {
 	public static String KLG_TEXT_INDEX = "klg_text_index";
 	
 	public static String KLG_TEXT_TYPR = "klg_text_type";
+	
+	public static String TEMPLATE_INDEX = "template_index";
+	
+	public static String TEMPLATE_TYPR = "template_type";
+	
+	public static String TEMPLATE_KEY_INDEX = "template_key_index";
+	
+	public static String TEMPLATE_KEY_TYPR = "template_key_type";
 
 }
