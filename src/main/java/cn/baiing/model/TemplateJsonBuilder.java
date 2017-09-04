@@ -4,6 +4,8 @@ import java.util.Map;
 
 import com.alibaba.fastjson.JSONObject;
 
+import cn.baiing.Util.DateUtil;
+
 public class TemplateJsonBuilder {
 	
 	/**
@@ -17,8 +19,13 @@ public class TemplateJsonBuilder {
 		json.put("name", map.get("name").toString());
 		json.put("displayName", map.get("displayName").toString());
 		json.put("sequence", map.get("sequence").toString());
-		json.put("creationTime", map.get("creationTime").toString());
-		json.put("lastUpdatedTime", map.get("lastUpdatedTime").toString());
+		if(map.get("creationTime") != null){
+			json.put("creationTime", DateUtil.getDateOfHaveAllTime(map.get("creationTime").toString()));
+		}
+		
+		if(map.get("lastUpdatedTime") != null){
+			json.put("lastUpdatedTime", DateUtil.getDateOfHaveAllTime(map.get("lastUpdatedTime").toString()));
+		}
 		json.put("parentCatalogId", map.get("parentCatalogId").toString());
 		return json;
 	}

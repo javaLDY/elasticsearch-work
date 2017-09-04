@@ -87,7 +87,7 @@ public class StartPutAllDataToEsService {
 			if(CollectionUtils.isEmpty(knowledgeVersionedIds)){
 				break;
 			}
-			
+			System.out.println("--------------------------------开始灌入知识主题数据----------------------------------------");
 			//灌入知识主体数据
 			List<Map<String, Object>> knowledges = knowledgeService.getKnowlegesByKvid(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledges)){
@@ -133,12 +133,15 @@ public class StartPutAllDataToEsService {
 		
 		System.out.println("总共拉取了:" + totalSize);
 		System.out.println("总共花了:" + (endTime - startTime) + "ms");
+		System.out.println("--------------------------------结束灌入知识主题数据----------------------------------------");
 	}
 	
 	/**
 	 * 灌入模板和模板属性数据
 	 */
 	public void startPutAllTemplateAttrsToEs(){
+		long startTime = System.currentTimeMillis();
+		System.out.println("--------------------------------开始灌入模板属性数据----------------------------------------");
 		//灌入模板数据
 		List<Map<String, Object>> templates = templateService.getTemplates();
 		if(CollectionUtils.isNotEmpty(templates)){
@@ -149,5 +152,8 @@ public class StartPutAllDataToEsService {
 		if(CollectionUtils.isNotEmpty(templateKeys)){
 			putTemplateKeyToEsService.bulkPutTemplateKeysToEs(templateKeys);
 		}
+		System.out.println("--------------------------------结束灌入模板属性数据----------------------------------------");
+		long endTime = System.currentTimeMillis();
+		System.out.println("总共花了:" + (endTime - startTime) + "ms");
 	}
 }

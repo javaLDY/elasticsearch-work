@@ -36,6 +36,7 @@ public class CreateAllIndexMappingService {
 	@SuppressWarnings("static-access")
 	public void createAllIndexMapping(){
 		try {
+			System.out.println("--------------------------------开始创建知识mapping----------------------------------------");
 			//创建知识主体Mapping
 			createKlgIndexMappingService.createKlgIndex();
 			//创建知识附件Mapping
@@ -50,6 +51,7 @@ public class CreateAllIndexMappingService {
 			createKlgTextIndexMappingService.createKnowledgeTextIndexMapping();
 			//创建知识数值Mapping
 			createKlgNumericIndexMappingService.createNumericIndexMapping();
+			System.out.println("--------------------------------创建知识mapping成功----------------------------------------");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -58,12 +60,14 @@ public class CreateAllIndexMappingService {
 	@SuppressWarnings("static-access")
 	public void createTemplateAttrsIndexMapping(){
 		try {
+			System.out.println("--------------------------------开始创建模板属性mapping----------------------------------------");
 			//创建模板mapping
 			createTemplateIndexMappingService.createTemplateIndexMapping();
 			//创建模板属性mapping
 			createTemplateKeyIndexMappingService.createTemplateIndexMapping();
+			System.out.println("--------------------------------创建模板属性mapping成功----------------------------------------");
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		}
 	}
 }

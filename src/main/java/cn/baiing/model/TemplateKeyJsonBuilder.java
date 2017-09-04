@@ -2,7 +2,12 @@ package cn.baiing.model;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.alibaba.fastjson.JSONObject;
+
+import cn.baiing.Util.DateUtil;
+import cn.baiing.util.StringUtil;
 
 public class TemplateKeyJsonBuilder {
 
@@ -18,11 +23,16 @@ public class TemplateKeyJsonBuilder {
 		json.put("name", map.get("name").toString());
 		json.put("displayName", map.get("displayName").toString());
 		json.put("sequence", map.get("sequence").toString());
-		json.put("creationTime", map.get("creationTime").toString());
+		if(map.get("creationTime") != null){
+			json.put("creationTime", DateUtil.getDateOfHaveAllTime(map.get("creationTime").toString()));
+		}
+		if(map.get("lastUpdatedTime") != null){
+			json.put("lastUpdatedTime", DateUtil.getDateOfHaveAllTime(map.get("lastUpdatedTime").toString()));
+		}
 		json.put("lastUpdatedTime", map.get("lastUpdatedTime").toString());
 		json.put("dataType", map.get("dataType").toString());
-		json.put("options", map.get("options").toString());
-		json.put("defaultUnit", map.get("defaultUnit").toString());
+		json.put("options", map.get("options") == null?"":map.get("options").toString());
+		json.put("defaultUnit", map.get("defaultUnit") == null?"":map.get("defaultUnit").toString());
 		return json;
 	}
 	
