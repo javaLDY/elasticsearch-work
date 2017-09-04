@@ -4,7 +4,10 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.aggregations.Aggregation;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONArray;
@@ -55,9 +58,38 @@ public class QueryKlgService {
 			}
 			responseJson.put("klgAttr", attr);
 		}
+		client.close();
 		System.out.println(responseJson.toJSONString());
 	}
+	
+	public static void queryKlgListByKeyword(String keyword){
+		TransportClient client = TransportUtil.buildClient();
+		AggregationBuilder aggregation = AggregationBuilders  
+                .terms("template")  
+                .field("templateId");  
+		SearchResponse response = client.prepareSearch(IndexRelationConstant.KLG_INDEX)
+		.setTypes(IndexRelationConstant.KLG_TYPE)
+		.setQuery(QueryBuilders.matchQuery("name", keyword))
+		.addAggregation(aggregation)
+		.execute()
+		.actionGet();
+		SearchHit[] klgListHits = response.getHits().getHits();
+		Terms aggregation2 = response.getAggregations().get("template");
+		for (Terms.Bucket entry : aggregation2.getBuckets()) {  
+            String key = (String) entry.getKey().toString(); // bucket key  
+            long docCount = entry.getDocCount(); // Doc count  
+            System.out.println("key " + key + " doc_count " + docCount);  
+        }  
+		System.out.println(aggregation2.getBuckets());
+//		if(klgListHits.length > 0){
+//			for(SearchHit searchHit : klgListHits){
+//				System.out.println(searchHit.getSourceAsString());
+//			}
+//		}
+	}
+	
 	public static void main(String[] args) {
-		getKnowledgeDetail("123344");
+//		getKnowledgeDetail("123344");
+		queryKlgListByKeyword("中国移动 VoLTE、4G+功能指导");
 	}
 }
