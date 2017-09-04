@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:c='http://www.springframework.org/schema/c'
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd"
+	default-lazy-init="true">
+
+	<description>Spring公共配置 </description>
+	<!-- 激活自动代理功能 -->
+	<aop:aspectj-autoproxy proxy-target-class="true"/>
+
+	<!-- 用于biDbHandler DAO中SQL语句的注入 -->
+	<import resource="classpath*:/sql*.xml" />
+
+	<!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+	<context:component-scan base-package="cn.baiing">
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.stereotype.Controller" />
+		<context:exclude-filter type="annotation"
+			expression="org.springframework.web.bind.annotation.ControllerAdvice" />
+	</context:component-scan>
+
+	<!-- turn on declarative caching -->
+	<cache:annotation-driven />
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+	<!-- JSR303 Validator定义 -->
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+	<!-- 事务配置 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 使用annotation定义事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"
+		proxy-target-class="true" />
+
+	<!-- redis template definition -->
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.RedisTemplate"
+		p:connection-factory-ref="connectionFactory">
+		<property name="keySerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="hashKeySerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="valueSerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+		</property>
+		<property name="hashValueSerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+		</property>
+	</bean>
+
+	<!-- declare Redis Cache Manager -->
+	<bean id='cacheManager' class='org.springframework.data.redis.cache.RedisCacheManager'
+		c:template-ref='redisTemplate' />
+
+	<!-- 定时任务配置 -->
+	<!-- <task:executor id="executor" pool-size="1" />
+	<task:scheduler id="scheduler" pool-size="1" />
+	<task:annotation-driven executor="executor"
+		scheduler="scheduler" /> -->
+	<!-- 定时任务配置 基于xml配置 start -->	
+	<!-- <task:annotation-driven /> 定时器开关
+	<bean id="yjTask" class="cn.baiing.task.DataSyncToYJTask"></bean>
+	<task:scheduled-tasks>
+	这里表示的是每隔五秒执行一次
+		<task:scheduled ref="yjTask" method="syncData2YunJi" cron="*/5 * * * * ?" />
+	</task:scheduled-tasks> -->
+	<!-- 自动扫描的包名 -->
+	<context:component-scan base-package="cn.baiing.task" />
+	<!-- 定时任务配置 基于xml配置 end -->
+
+	<!-- production环境 -->
+	<beans profile="production">
+		<context:property-placeholder
+			ignore-unresolvable="true"
+			location="classpath*:/application*.properties" />
+		<!-- 此次更改为实际项目的配置文件，相同属性后面文件的覆盖前面的 -->
+
+		<!-- 数据源配置, 使用Alibaba Druid连接池 -->
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+			init-method="init" destroy-method="close">
+			<!-- 基本属性 url、user、password -->
+			<property name="url" value="${jdbc.url}" />
+			<property name="username" value="${jdbc.username}" />
+			<property name="password" value="${jdbc.password}" />
+
+			<!-- 配置初始化大小、最小、最大 -->
+			<property name="initialSize" value="${jdbc.pool.initialSize}" />
+			<property name="minIdle" value="${jdbc.pool.minIdle}" />
+			<property name="maxActive" value="${jdbc.pool.maxActive}" />
+
+			<!-- 配置获取连接等待超时的时间 -->
+			<property name="maxWait" value="60000" />
+
+			<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+			<property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+			<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+			<property name="minEvictableIdleTimeMillis" value="300000" />
+
+			<property name="validationQuery" value="SELECT 'x'" />
+			<property name="testWhileIdle" value="true" />
+			<property name="testOnBorrow" value="false" />
+			<property name="testOnReturn" value="false" />
+
+			<!-- 打开PSCache，并且指定每个连接上PSCache的大小，MySQL5.5以后才支持 -->
+			<property name="poolPreparedStatements" value="false" />
+			<property name="maxPoolPreparedStatementPerConnectionSize"
+				value="20" />
+
+			<!-- 配置监控统计拦截的filters -->
+			<property name="filters" value="wall,log4j" />
+		</bean>
+
+		<!-- 数据源配置,使用应用服务器的数据库连接池 -->
+		<!--<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/BaiingDB"
+			/> -->
+
+		<!-- 配置Redis缓存服务器 -->
+		<bean id="connectionFactory"
+			class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+			<property name="usePool" value="true"></property>
+			<property name="hostName" value="${redis.host}" />
+			<property name="port" value="${redis.port}" />
+			<property name="timeout" value="${redis.timeout}" />
+			<property name="database" value="${redis.default.db}"></property>
+		</bean>
+
+		<!-- 搜索引擎配置 -->
+		<bean id="searchClientHelper" class="cn.baiing.c.search.SearchProxyFactory">
+			<property name="searchServiceHost" value="${search.service.host}" />
+			<property name="searchServicePort" value="${search.service.port}" />
+			<property name="suggestServiceHost" value="${suggestion.service.host}" />
+			<property name="suggestServicePort" value="${suggestion.service.port}" />
+		</bean>
+		<!-- 地区ID云极地址配置 -->
+		<bean id="systemConfig" class="cn.baiing.config.SystemConfig">
+			<property name="locationId"  value="${locationId}"/>
+			<property name="channelNum"  value="${channelNum}"/>
+			<property name="groupName"  value="${groupName}"/>
+			<property name="excludeGroupName"  value="${excludeGroupName}"/>
+			<property name="pageSize"  value="${pageSize}"/>
+			<property name="wwyUrl"  value="${wwyUrl}"/>
+			<property name="imgServerAddress"  value="${imgServerAddress}"/>
+			<property name="imgRelationAddress"  value="${imgRelationAddress}"/>
+			<property name="mainTemplateAndNode"  value="${mainTemplateAndNode}"/>
+			<property name="httpRequestUrl"  value="${httpRequestUrl}"/>
+			<property name="trainHttpRequestUrl"  value="${trainHttpRequestUrl}"/>
+		</bean>
+
+	</beans>
+
+</beans>

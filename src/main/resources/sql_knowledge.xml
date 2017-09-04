@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<bean id="sql_getKnowledges" class="java.lang.String">
+		<constructor-arg>
+			<value>
+			<![CDATA[
+			SELECT
+				k.`name`,
+				k.knowledge_id knowledgeId,
+				k.knowledge_versioned_id AS knowledgeVersionedId,
+				k.effect_start_time effectStartTime,
+				k.effect_end_time effectEndTime,
+				k.start_time startTime,
+				k.end_time endTime,
+				k.vids,
+				k.mongo_id mongoId,
+				k.last_updated_time lastUpdatedTime
+			FROM
+				knowledges k
+			WHERE
+				is_deleted = 1
+			AND is_published = 1
+			AND state = 10 
+			AND knowledge_id 
+			LIMIT ?,?
+			]]>
+			</value>
+		</constructor-arg>
+	</bean>
+</beans>
