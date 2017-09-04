@@ -20,12 +20,12 @@ public class CreateKlgDateIndexMappingService {
 		client.admin().indices().prepareCreate(IndexRelationConstant.KLG_DATE_INDEX).execute().actionGet();
 		try {
 			XContentBuilder klgMapping = XContentFactory.jsonBuilder().startObject()
-					.startObject(IndexRelationConstant.KLG_DATE_TYPR).startObject(IndexRelationConstant.PROPERTIES)
+					.startObject(IndexRelationConstant.KLG_DATE_TYPE).startObject(IndexRelationConstant.PROPERTIES)
 					.startObject("knowledgeVersionedId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("keyId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("date").field("type", "date").endObject()
 					.endObject().endObject().endObject();
-			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_DATE_INDEX).type(IndexRelationConstant.KLG_DATE_TYPR).source(klgMapping);
+			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_DATE_INDEX).type(IndexRelationConstant.KLG_DATE_TYPE).source(klgMapping);
 			 client.admin().indices().putMapping(mappingRequest).actionGet();
 		} catch (IOException e) {
 			e.printStackTrace();

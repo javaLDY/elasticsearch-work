@@ -118,6 +118,7 @@ public class StartPutAllDataToEsService {
 			if(CollectionUtils.isNotEmpty(knowledgeSmsList)){
 				putKnowledgeSmsToEsService.bulkPutKnowledgeSmsToEs(knowledgeSmsList);
 			}
+			//灌入知识文本类型数据
 			List<Map<String, Object>> knowledgeTextAttributes = knowledgeTextAttributesService.getKnowledgeTextAttributes(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledgeTextAttributes)){
 				putKnowledgeTextToEsService.bulkPutKnowledgeSmsToEs(knowledgeTextAttributes);

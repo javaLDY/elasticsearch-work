@@ -27,7 +27,7 @@ public class PutKnowledgeBusinessTagToEsService {
 					for(Map<String, Object> map : knowledgeBusinessTags){
 						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
 						IndexRequest request = new IndexRequest();
-						request.index(IndexRelationConstant.KLG_BUSINESSTAG_INDEX).type(IndexRelationConstant.KLG_BUSINESSTAG_TYPR).id(knowledgeVersionedId)
+						request.index(IndexRelationConstant.KLG_BUSINESSTAG_INDEX).type(IndexRelationConstant.KLG_BUSINESSTAG_TYPE)
 						.source(KnowledgeBusinessTagJsonBuilder.createKlgBusinessTagJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}

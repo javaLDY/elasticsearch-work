@@ -26,7 +26,7 @@ public class PutKnowledgeDateToEsService {
 					for(Map<String, Object> map : knowledgeDates){
 						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
 						IndexRequest request = new IndexRequest();
-						request.index(IndexRelationConstant.KLG_DATE_INDEX).type(IndexRelationConstant.KLG_DATE_TYPR).id(knowledgeVersionedId)
+						request.index(IndexRelationConstant.KLG_DATE_INDEX).type(IndexRelationConstant.KLG_DATE_TYPE)
 						.source(KnowledgeDateJsonBuilder.createKlgDateJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}

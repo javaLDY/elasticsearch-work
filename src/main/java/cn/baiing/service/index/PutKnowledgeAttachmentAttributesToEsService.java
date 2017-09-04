@@ -27,7 +27,7 @@ public class PutKnowledgeAttachmentAttributesToEsService {
 					for(Map<String, Object> map : knowledgeAttachments){
 						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
 						IndexRequest request = new IndexRequest();
-						request.index(IndexRelationConstant.KLG_ATTACHMENT_INDEX).type(IndexRelationConstant.KLG_ATTACHMENT_TYPR).id(knowledgeVersionedId)
+						request.index(IndexRelationConstant.KLG_ATTACHMENT_INDEX).type(IndexRelationConstant.KLG_ATTACHMENT_TYPE)
 						.source(KnowledgeAttachmentJsonBuilder.createKlgAttachmentJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}

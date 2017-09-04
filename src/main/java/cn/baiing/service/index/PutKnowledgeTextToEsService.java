@@ -27,8 +27,7 @@ public class PutKnowledgeTextToEsService {
 						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
 						IndexRequest request = new IndexRequest();
 						request.index(IndexRelationConstant.KLG_TEXT_INDEX).
-						type(IndexRelationConstant.KLG_TEXT_TYPR)
-						.id(knowledgeVersionedId)
+						type(IndexRelationConstant.KLG_TEXT_TYPE)
 						.source(KnowledgeTextJsonBuilder.createKlgTextJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}

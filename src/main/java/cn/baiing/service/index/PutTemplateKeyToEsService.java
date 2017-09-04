@@ -27,7 +27,7 @@ public class PutTemplateKeyToEsService {
 						keyId = map.get("id").toString();
 						IndexRequest request = new IndexRequest();
 						request.index(IndexRelationConstant.TEMPLATE_KEY_INDEX).
-						type(IndexRelationConstant.TEMPLATE_KEY_TYPR)
+						type(IndexRelationConstant.TEMPLATE_KEY_TYPE)
 						.id(keyId)
 						.source(TemplateKeyJsonBuilder.createTemplateKeyJsonByMap(map));
 	                    bulkProcessor.add(request);

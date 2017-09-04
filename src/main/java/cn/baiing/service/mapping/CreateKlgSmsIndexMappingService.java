@@ -20,12 +20,12 @@ public class CreateKlgSmsIndexMappingService {
 		client.admin().indices().prepareCreate(IndexRelationConstant.KLG_SMS_INDEX).execute().actionGet();
 		try {
 			XContentBuilder klgMapping = XContentFactory.jsonBuilder().startObject()
-					.startObject(IndexRelationConstant.KLG_SMS_TYPR).startObject(IndexRelationConstant.PROPERTIES)
+					.startObject(IndexRelationConstant.KLG_SMS_TYPE).startObject(IndexRelationConstant.PROPERTIES)
 					.startObject("knowledgeVersionedId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("keyId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("value").field("type", "text").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.endObject().endObject().endObject();
-			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_SMS_INDEX).type(IndexRelationConstant.KLG_SMS_TYPR).source(klgMapping);
+			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_SMS_INDEX).type(IndexRelationConstant.KLG_SMS_TYPE).source(klgMapping);
 			 client.admin().indices().putMapping(mappingRequest).actionGet();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -27,7 +27,7 @@ public class PutTemplateToEsService {
 						templateId = map.get("id").toString();
 						IndexRequest request = new IndexRequest();
 						request.index(IndexRelationConstant.TEMPLATE_INDEX).
-						type(IndexRelationConstant.TEMPLATE_TYPR)
+						type(IndexRelationConstant.TEMPLATE_TYPE)
 						.id(templateId)
 						.source(TemplateJsonBuilder.createTemplateJsonByMap(map));
 	                    bulkProcessor.add(request);

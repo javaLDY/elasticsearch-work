@@ -27,8 +27,7 @@ public class PutKnowledgeNumericToEsService {
 						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
 						IndexRequest request = new IndexRequest();
 						request.index(IndexRelationConstant.KLG_NUMERIC_INDEX).
-						type(IndexRelationConstant.KLG_NUMERIC_TYPR)
-						.id(knowledgeVersionedId)
+						type(IndexRelationConstant.KLG_NUMERIC_TYPE)
 						.source(KnowledgeNumericeJsonBuilder.createKlgNumericJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}

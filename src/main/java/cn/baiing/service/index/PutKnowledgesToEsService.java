@@ -28,7 +28,7 @@ public class PutKnowledgesToEsService {
 				try {
 					for(Map<String, Object> map : knowledges){
 						knowledgeId = map.get("knowledgeId").toString();
-						IndexResponse response = transportClient.prepareIndex(IndexRelationConstant.KLG_INDEX, IndexRelationConstant.KLG_TYPE,map.get("knowledgeId").toString())
+						transportClient.prepareIndex(IndexRelationConstant.KLG_INDEX, IndexRelationConstant.KLG_TYPE)
 						.setSource(KnowledgeJsonBuilder.createKlgJsonByKlgMap(map)).get();
 					}
 				} catch (Exception e) {

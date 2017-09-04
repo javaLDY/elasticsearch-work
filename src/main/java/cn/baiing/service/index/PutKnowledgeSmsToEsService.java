@@ -27,8 +27,7 @@ public class PutKnowledgeSmsToEsService {
 						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
 						IndexRequest request = new IndexRequest();
 						request.index(IndexRelationConstant.KLG_SMS_INDEX).
-						type(IndexRelationConstant.KLG_SMS_TYPR)
-						.id(knowledgeVersionedId)
+						type(IndexRelationConstant.KLG_SMS_TYPE)
 						.source(KnowledgeSmsJsonBuilder.createKlgSmsJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}

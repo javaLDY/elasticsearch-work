@@ -20,13 +20,13 @@ public class CreateKlgNumericIndexMappingService {
 		client.admin().indices().prepareCreate(IndexRelationConstant.KLG_NUMERIC_INDEX).execute().actionGet();
 		try {
 			XContentBuilder klgMapping = XContentFactory.jsonBuilder().startObject()
-					.startObject(IndexRelationConstant.KLG_NUMERIC_TYPR).startObject(IndexRelationConstant.PROPERTIES)
+					.startObject(IndexRelationConstant.KLG_NUMERIC_TYPE).startObject(IndexRelationConstant.PROPERTIES)
 					.startObject("knowledgeVersionedId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("keyId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("value").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("currentUnit").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.endObject().endObject().endObject();
-			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_NUMERIC_INDEX).type(IndexRelationConstant.KLG_NUMERIC_TYPR).source(klgMapping);
+			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_NUMERIC_INDEX).type(IndexRelationConstant.KLG_NUMERIC_TYPE).source(klgMapping);
 			 client.admin().indices().putMapping(mappingRequest).actionGet();
 		} catch (IOException e) {
 			e.printStackTrace();
