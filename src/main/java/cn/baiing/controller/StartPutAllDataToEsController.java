@@ -20,6 +20,6 @@ public class StartPutAllDataToEsController {
 	
 	@RequestMapping("/startPutAllTemplateAttrsToService")
 	public void startPutAllTemplateAttrsToService(){
-		 startPutAllDataToEsService.startPutAllTemplateAttrsToEs();
+		startPutAllDataToEsService.startPutAllTemplateAttrsToEs();
 	}
 }
