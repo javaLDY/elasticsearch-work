@@ -21,7 +21,7 @@ public class CreateKlgIndexMappingService {
 		try {
 			XContentBuilder klgMapping = XContentFactory.jsonBuilder().startObject()
 					.startObject(IndexRelationConstant.KLG_TYPE).startObject(IndexRelationConstant.PROPERTIES)
-					.startObject("name").field("type", "text").endObject()
+					.startObject("name").field("type", "text").field("analyzer", IndexRelationConstant.IK_ANALYZER_MAX_WORD).endObject()
 					.startObject("knowledgeId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("knowledgeVersionedId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("effectStartTime").field("type", "date").endObject()
@@ -40,4 +40,7 @@ public class CreateKlgIndexMappingService {
 		}
 	}
 	
+	public static void main(String[] args) {
+		createKlgIndex();
+	}
 }

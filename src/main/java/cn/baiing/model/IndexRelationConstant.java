@@ -6,6 +6,10 @@ public class IndexRelationConstant {
 	
 	public static String NOT_ANALYZED = "not_analyzed";//是否分词
 	
+	public static String IK_ANALYZER_MAX_WORD = "ik_max_word";
+	
+	public static String IK_ANALYZER_SMART = "ik_smart";
+	
 	public static String KLG_INDEX = "klg_index";
 	
 	public static String KLG_TYPE = "klg_type";

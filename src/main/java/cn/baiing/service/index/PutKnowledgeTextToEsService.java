@@ -16,7 +16,7 @@ import cn.baiing.model.KnowledgeTextJsonBuilder;
 @Service
 public class PutKnowledgeTextToEsService {
 
-	public void bulkPutKnowledgeSmsToEs(List<Map<String, Object>> knowledgeTextAttributes){
+	public void bulkPutKnowledgeTextToEs(List<Map<String, Object>> knowledgeTextAttributes){
 		String knowledgeVersionedId = null;
 		TransportClient client = TransportUtil.buildClient();
 		BulkProcessor bulkProcessor = TransportUtil.bulkProcess(client);
