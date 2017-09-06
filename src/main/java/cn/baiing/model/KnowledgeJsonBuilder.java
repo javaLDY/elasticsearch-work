@@ -1,12 +1,13 @@
 package cn.baiing.model;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-
-import com.alibaba.fastjson.JSONObject;
 
 import cn.baiing.Util.DateUtil;
 
@@ -46,8 +47,8 @@ public class KnowledgeJsonBuilder {
 	 * @param klgMap
 	 * @return
 	 */
-	public static JSONObject createKlgJsonByKlgMap(Map<String, Object> klgMap){
-		JSONObject json = new JSONObject();
+	public static Map<String, Object> createKlgJsonByKlgMap(Map<String, Object> klgMap){
+		Map<String, Object> json = new HashMap<String, Object>();
 		json.put("name", klgMap.get("name").toString());
 		json.put("knowledgeId", klgMap.get("knowledgeId").toString());
 		json.put("knowledgeVersionedId", klgMap.get("knowledgeVersionedId").toString());
@@ -70,7 +71,8 @@ public class KnowledgeJsonBuilder {
 		if(klgMap.get("lastUpdatedTime") != null){
 			json.put("lastUpdatedTime", DateUtil.getDateOfHaveAllTime(klgMap.get("lastUpdatedTime").toString()));
 		}
-		json.put("vids", klgMap.get("vids").toString());
+		List<String> vids = Arrays.asList(klgMap.get("vids").toString());
+		json.put("vids", vids);
 		json.put("mongoId", klgMap.get("mongoId").toString());
 		json.put("templateId", Long.valueOf(klgMap.get("templateId").toString()));
 		

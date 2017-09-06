@@ -1,20 +1,24 @@
 package cn.baiing.service.query;
 
+import java.util.Map;
+
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.aggregations.Aggregation;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
 import org.springframework.stereotype.Service;
-
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 
 import cn.baiing.Util.TransportUtil;
 import cn.baiing.model.IndexRelationConstant;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 @Service
 public class QueryKlgService {
@@ -64,28 +68,44 @@ public class QueryKlgService {
 	
 	public static void queryKlgListByKeyword(String keyword){
 		TransportClient client = TransportUtil.buildClient();
+		HighlightBuilder highlightBuilder = new HighlightBuilder();
+		highlightBuilder.field("name");
+		highlightBuilder.preTags("<span stype=\"color:red\">");
+		highlightBuilder.postTags("</span>");
 		AggregationBuilder aggregation = AggregationBuilders  
                 .terms("template")  
                 .field("templateId");  
 		SearchResponse response = client.prepareSearch(IndexRelationConstant.KLG_INDEX)
 		.setTypes(IndexRelationConstant.KLG_TYPE)
 		.setQuery(QueryBuilders.matchQuery("name", keyword))
+		.highlighter(highlightBuilder)
 		.addAggregation(aggregation)
 		.execute()
 		.actionGet();
 		SearchHit[] klgListHits = response.getHits().getHits();
+		JSONArray resultArray = new JSONArray();
+		if(klgListHits.length > 0){
+			for(SearchHit searchHit : klgListHits){
+				String sources = searchHit.getSourceAsString();
+				JSONObject singleKlg = JSONObject.parseObject(sources);
+				Map<String, HighlightField> result = searchHit.getHighlightFields();
+				HighlightField highlightField = result.get("name");
+				Text[] nameTexts = highlightField.getFragments();
+				String name = "";
+				for(Text text : nameTexts){
+					name += text;
+				}
+				singleKlg.put("name", name);
+				resultArray.add(singleKlg);
+			}
+		}
+		System.out.println(resultArray.toJSONString());
 		Terms aggregation2 = response.getAggregations().get("template");
 		for (Terms.Bucket entry : aggregation2.getBuckets()) {  
             String key = (String) entry.getKey().toString(); // bucket key  
             long docCount = entry.getDocCount(); // Doc count  
             System.out.println("key " + key + " doc_count " + docCount);  
         }  
-		System.out.println(aggregation2.getBuckets());
-//		if(klgListHits.length > 0){
-//			for(SearchHit searchHit : klgListHits){
-//				System.out.println(searchHit.getSourceAsString());
-//			}
-//		}
 	}
 	
 	public static void main(String[] args) {

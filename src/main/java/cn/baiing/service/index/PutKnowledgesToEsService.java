@@ -19,28 +19,7 @@ public class PutKnowledgesToEsService {
 
 	/**
 	 * 向es中灌入数据
-	 */
-	public void putKnowledgesToEs(List<Map<String, Object>> knowledges){
-		TransportClient transportClient = TransportUtil.buildClient();
-		String knowledgeId = null;
-		try {
-			if(CollectionUtils.isNotEmpty(knowledges)){
-				try {
-					for(Map<String, Object> map : knowledges){
-						knowledgeId = map.get("knowledgeId").toString();
-						transportClient.prepareIndex(IndexRelationConstant.KLG_INDEX, IndexRelationConstant.KLG_TYPE)
-						.setSource(KnowledgeJsonBuilder.createKlgJsonByKlgMap(map)).get();
-					}
-				} catch (Exception e) {
-					System.out.println("失败的知识ID：" + knowledgeId);
-					System.out.println(e);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
+	*/
 	public void bulkPutKnowledgesToEs(List<Map<String, Object>> knowledges){
 		String knowledgeId = null;
 		TransportClient client = TransportUtil.buildClient();
