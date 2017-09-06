@@ -2,20 +2,29 @@ package cn.baiing.service.query;
 
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.text.Text;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
+import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder.Order;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
+import org.elasticsearch.search.sort.SortBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.stereotype.Service;
 
+import cn.baiing.Util.CombineSearchRequstToEsUnit;
 import cn.baiing.Util.TransportUtil;
 import cn.baiing.model.IndexRelationConstant;
+import cn.baiing.model.SearchRequest;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -66,22 +75,23 @@ public class QueryKlgService {
 		System.out.println(responseJson.toJSONString());
 	}
 	
-	public static void queryKlgListByKeyword(String keyword){
+	public static void queryKlgListByKeyword(SearchRequest searchRequest){
 		TransportClient client = TransportUtil.buildClient();
-		HighlightBuilder highlightBuilder = new HighlightBuilder();
-		highlightBuilder.field("name");
-		highlightBuilder.preTags("<span stype=\"color:red\">");
-		highlightBuilder.postTags("</span>");
 		AggregationBuilder aggregation = AggregationBuilders  
                 .terms("template")  
-                .field("templateId");  
+                .field("templateId");
+		
+		
 		SearchResponse response = client.prepareSearch(IndexRelationConstant.KLG_INDEX)
-		.setTypes(IndexRelationConstant.KLG_TYPE)
-		.setQuery(QueryBuilders.matchQuery("name", keyword))
-		.highlighter(highlightBuilder)
-		.addAggregation(aggregation)
-		.execute()
-		.actionGet();
+							.setTypes(IndexRelationConstant.KLG_TYPE)
+							.setQuery(CombineSearchRequstToEsUnit.combineSelectKeywordQueryBuilder(searchRequest))
+							.highlighter(CombineSearchRequstToEsUnit.combineHighLingtRule("name"))
+							.addAggregation(aggregation)
+							.addSort(CombineSearchRequstToEsUnit.combineSortBuilder(searchRequest.getSortParam()))
+							.setFrom(0)
+							.setSize(15)
+							.execute()
+							.actionGet();
 		SearchHit[] klgListHits = response.getHits().getHits();
 		JSONArray resultArray = new JSONArray();
 		if(klgListHits.length > 0){
@@ -110,6 +120,6 @@ public class QueryKlgService {
 	
 	public static void main(String[] args) {
 //		getKnowledgeDetail("123344");
-		queryKlgListByKeyword("中国移动 VoLTE、4G+功能指导");
+//		queryKlgListByKeyword("套餐");
 	}
 }
