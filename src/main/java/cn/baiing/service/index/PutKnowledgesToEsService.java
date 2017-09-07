@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.springframework.stereotype.Service;
 

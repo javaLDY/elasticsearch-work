@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import cn.baiing.Util.TransportUtil;
 import cn.baiing.model.IndexRelationConstant;
 import cn.baiing.model.KnowledgeAttachmentJsonBuilder;
-import cn.baiing.model.KnowledgeJsonBuilder;
 
 @Service
 public class PutKnowledgeAttachmentAttributesToEsService {

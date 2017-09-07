@@ -2,12 +2,10 @@ package cn.baiing.model;
 
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 
 import com.alibaba.fastjson.JSONObject;
 
 import cn.baiing.Util.DateUtil;
-import cn.baiing.util.StringUtil;
 
 public class TemplateKeyJsonBuilder {
 
