@@ -1,8 +1,15 @@
 package cn.baiing.Util;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
+import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.range.RangeAggregator.Range;
+import org.elasticsearch.search.aggregations.bucket.range.date.DateRangeAggregationBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -27,7 +34,11 @@ public class CombineSearchRequstToEsUnit {
 		}
 		
 		if(StringUtils.isNotBlank(searchRequest.getLocationId())){
-			booleanQueryBuilder.must(QueryBuilders.matchQuery("locationId", searchRequest.getLocationId()));
+			booleanQueryBuilder.must(QueryBuilders.termsQuery("locationId", searchRequest.getLocationId()));
+		}
+		
+		if(StringUtils.isNotBlank(searchRequest.getChannel())){
+			booleanQueryBuilder.must(QueryBuilders.termsQuery("vids", searchRequest.getChannel()));
 		}
 		
 		return booleanQueryBuilder;
@@ -70,4 +81,31 @@ public class CombineSearchRequstToEsUnit {
 		return highlightBuilder;
 	}
 	
+	/**
+	 * 模板聚合规则
+	 * @return
+	 */
+	public static AggregationBuilder combineTemplateAggregationBuilder(){
+		//模板聚合
+		AggregationBuilder templateAggregation = AggregationBuilders.terms("template").field("templateId");
+		return templateAggregation;
+	}
+	
+	/**
+	 * 历史库聚合规则
+	 * @return
+	 */
+	public static AggregationBuilder combineIsExpireAggregationBuilder(){
+		AggregationBuilder isExpireAggregation = AggregationBuilders.filter("isExpire", QueryBuilders.rangeQuery("endTime").lte(new Date().getTime()));
+		return isExpireAggregation;
+	}
+	
+	/**
+	 * 预备库聚合规则
+	 * @return
+	 */
+	public static AggregationBuilder combineIsStartAggregationBuilder(){
+		AggregationBuilder isExpireAggregation = AggregationBuilders.filter("isStart", QueryBuilders.rangeQuery("startTime").gte(new Date().getTime()));
+		return isExpireAggregation;
+	}
 }

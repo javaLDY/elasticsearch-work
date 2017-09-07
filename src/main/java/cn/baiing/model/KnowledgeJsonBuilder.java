@@ -1,6 +1,7 @@
 package cn.baiing.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,8 @@ import java.util.Map;
 
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+
+import com.alibaba.fastjson.JSONArray;
 
 import cn.baiing.Util.DateUtil;
 
@@ -71,8 +74,12 @@ public class KnowledgeJsonBuilder {
 		if(klgMap.get("lastUpdatedTime") != null){
 			json.put("lastUpdatedTime", DateUtil.getDateOfHaveAllTime(klgMap.get("lastUpdatedTime").toString()));
 		}
-		List<String> vids = Arrays.asList(klgMap.get("vids").toString());
-		json.put("vids", vids);
+		String[] vids = klgMap.get("vids").toString().split(",");
+		List<Long> newVids = new ArrayList<Long>();
+		for(String ss : vids){
+			newVids.add(Long.valueOf(ss));
+		}
+		json.put("vids", newVids);
 		json.put("mongoId", klgMap.get("mongoId").toString());
 		json.put("templateId", Long.valueOf(klgMap.get("templateId").toString()));
 		
@@ -80,7 +87,12 @@ public class KnowledgeJsonBuilder {
 	}
 	
 	public static void main(String[] args) {
-		String time = "2015-12-25 00:00:00.0";
-		System.out.println(DateUtil.getDateOfHaveAllTime(time));
+		String ss = "1";
+		String[] list = ss.split(",");
+		List<Long> newVids = new ArrayList<Long>();
+		for(String aa : list){
+			newVids.add(Long.valueOf(aa));
+		}
+		System.out.println(JSONArray.toJSONString(newVids));
 	}
 }

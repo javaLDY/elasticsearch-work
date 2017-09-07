@@ -18,6 +18,16 @@ public class SearchRequest {
 	private String knowledgeId;
 	
 	private String keyId;
+	
+	private String channel;
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
 
 	public String getKeyword() {
 		return keyword;

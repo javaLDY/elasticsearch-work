@@ -12,6 +12,8 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.filter.FilterAggregator;
+import org.elasticsearch.search.aggregations.bucket.filter.InternalFilter;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder.Order;
@@ -30,63 +32,22 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 
 @Service
-public class QueryKlgService {
+public class QueryKlgListService {
 
-	public static void getKnowledgeDetail(String knowledgeVersionedId){
-		TransportClient client = TransportUtil.buildClient();
-		JSONObject responseJson = new JSONObject();
-		SearchResponse klgSearchResponse = client.prepareSearch(IndexRelationConstant.KLG_INDEX)
-				.setTypes(IndexRelationConstant.KLG_TYPE)
-				.setQuery(QueryBuilders.matchQuery("knowledgeVersionedId", knowledgeVersionedId))
-				.execute()
-				.actionGet();
-		SearchHit[] searchHits = klgSearchResponse.getHits().getHits();
-		if(searchHits.length > 0){
-			for(SearchHit searchHit : searchHits){
-				responseJson = JSONObject.parseObject(searchHit.getSourceAsString());
-			}
-		}
-		SearchResponse KlgAttrSearchResponse = client.prepareSearch(
-				IndexRelationConstant.KLG_ATTACHMENT_INDEX,
-				IndexRelationConstant.KLG_BUSINESSTAG_INDEX,
-				IndexRelationConstant.KLG_DATE_INDEX,
-				IndexRelationConstant.KLG_NUMERIC_INDEX,
-				IndexRelationConstant.KLG_SMS_INDEX,
-				IndexRelationConstant.KLG_TEXT_INDEX)
-		.setTypes(
-				IndexRelationConstant.KLG_ATTACHMENT_TYPE,
-				IndexRelationConstant.KLG_BUSINESSTAG_TYPE,
-				IndexRelationConstant.KLG_DATE_TYPE,
-				IndexRelationConstant.KLG_NUMERIC_TYPE,
-				IndexRelationConstant.KLG_SMS_TYPE,
-				IndexRelationConstant.KLG_TEXT_TYPE)
-		.setQuery(QueryBuilders.matchQuery("knowledgeVersionedId", knowledgeVersionedId))
-		.execute().actionGet();
-		SearchHit[] klgAttrHits = KlgAttrSearchResponse.getHits().getHits();
-		if(searchHits.length > 0){
-			JSONArray attr = new JSONArray();
-			for(SearchHit searchHit : klgAttrHits){
-				JSONObject attrJson = JSONObject.parseObject(searchHit.getSourceAsString());
-				attr.add(attrJson);
-			}
-			responseJson.put("klgAttr", attr);
-		}
-		client.close();
-		System.out.println(responseJson.toJSONString());
-	}
-	
+	/**
+	 * 查询知识列表根据关键字
+	 * @param searchRequest
+	 */
 	public static void queryKlgListByKeyword(SearchRequest searchRequest){
 		TransportClient client = TransportUtil.buildClient();
-		AggregationBuilder aggregation = AggregationBuilders  
-                .terms("template")  
-                .field("templateId");
-		
 		
 		SearchResponse response = client.prepareSearch(IndexRelationConstant.KLG_INDEX)
 							.setTypes(IndexRelationConstant.KLG_TYPE)
 							.setQuery(CombineSearchRequstToEsUnit.combineSelectKeywordQueryBuilder(searchRequest))
 							.highlighter(CombineSearchRequstToEsUnit.combineHighLingtRule("name"))
-							.addAggregation(aggregation)
+							.addAggregation(CombineSearchRequstToEsUnit.combineTemplateAggregationBuilder())
+							.addAggregation(CombineSearchRequstToEsUnit.combineIsExpireAggregationBuilder())
+							.addAggregation(CombineSearchRequstToEsUnit.combineIsStartAggregationBuilder())
 							.addSort(CombineSearchRequstToEsUnit.combineSortBuilder(searchRequest.getSortParam()))
 							.setFrom(0)
 							.setSize(15)
@@ -110,16 +71,25 @@ public class QueryKlgService {
 			}
 		}
 		System.out.println(resultArray.toJSONString());
-		Terms aggregation2 = response.getAggregations().get("template");
-		for (Terms.Bucket entry : aggregation2.getBuckets()) {  
+		InternalFilter isExpireAggregation = response.getAggregations().get("isExpire");
+		System.out.println("历史库数量:" + isExpireAggregation.getDocCount());
+		
+		InternalFilter isStartAggregation = response.getAggregations().get("isStart");
+		System.out.println("知识库数量:" + isStartAggregation.getDocCount());
+		
+		Terms isExpireAgg = response.getAggregations().get("template");
+		for (Terms.Bucket entry : isExpireAgg.getBuckets()) {  
             String key = (String) entry.getKey().toString(); // bucket key  
             long docCount = entry.getDocCount(); // Doc count  
             System.out.println("key " + key + " doc_count " + docCount);  
-        }  
+        } 
 	}
 	
 	public static void main(String[] args) {
 //		getKnowledgeDetail("123344");
-//		queryKlgListByKeyword("套餐");
+		SearchRequest request = new SearchRequest();
+		request.setKeyword("套餐");
+		request.setChannel("3");
+		queryKlgListByKeyword(request);
 	}
 }
