@@ -31,7 +31,7 @@ public class CombineSearchRequstToEsUnit {
 		}
 		
 		if(StringUtils.isNotBlank(searchRequest.getLocationId())){
-			booleanQueryBuilder.must(QueryBuilders.termsQuery("locationId", searchRequest.getLocationId()));
+			booleanQueryBuilder.must(QueryBuilders.termsQuery("locIds", searchRequest.getLocationId()));
 		}
 		
 		if(StringUtils.isNotBlank(searchRequest.getChannel())){
@@ -84,7 +84,7 @@ public class CombineSearchRequstToEsUnit {
 	 */
 	public static AggregationBuilder combineTemplateAggregationBuilder(){
 		//模板聚合
-		AggregationBuilder templateAggregation = AggregationBuilders.terms("template").field("templateId");
+		AggregationBuilder templateAggregation = AggregationBuilders.terms("template").field("templateDisplayName");
 		return templateAggregation;
 	}
 	

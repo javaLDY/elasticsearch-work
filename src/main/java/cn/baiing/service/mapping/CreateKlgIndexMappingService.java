@@ -32,6 +32,11 @@ public class CreateKlgIndexMappingService {
 					.startObject("mongoId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("lastUpdatedTime").field("type", "date").endObject()
 					.startObject("templateId").field("type", "long").endObject()
+					.startObject("locIds").field("type", "long").endObject()
+					.startObject("locationName").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("templateDisplayName").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("templateName").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("clickNum").field("type", "integer").endObject()
 					.endObject().endObject().endObject();
 			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_INDEX).type(IndexRelationConstant.KLG_TYPE).source(klgMapping);
 			client.admin().indices().putMapping(mappingRequest).actionGet();

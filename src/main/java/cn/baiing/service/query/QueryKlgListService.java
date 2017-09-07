@@ -78,6 +78,7 @@ public class QueryKlgListService {
 		SearchRequest request = new SearchRequest();
 		request.setKeyword("套餐");
 		request.setChannel("3");
+		request.setLocationId("31410");
 		queryKlgListByKeyword(request);
 	}
 }

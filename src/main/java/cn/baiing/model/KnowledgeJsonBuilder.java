@@ -16,35 +16,6 @@ import cn.baiing.Util.DateUtil;
 public class KnowledgeJsonBuilder {
 
 	/**
-	 * 构建基础klg数据put原型
-	 * @param klgMap
-	 * @return
-	 */
-	public static XContentBuilder createKlgJsonBuilderByKlgMap(Map<String, Object> klgMap){
-		XContentBuilder xContentBuilder = null;
-		try {
-			xContentBuilder = XContentFactory.jsonBuilder().startObject()
-				.field("name", klgMap.get("name").toString())
-				.field("knowledgeId", klgMap.get("knowledgeId").toString())
-				.field("knowledgeVersionedId", klgMap.get("knowledgeVersionedId").toString())
-				.field("effectStartTime", klgMap.get("effectStartTime") == null?false:DateUtil.getDateOfHaveAllTime(klgMap.get("effectStartTime").toString()))
-				.field("effectEndTime", klgMap.get("effectEndTime") == null?false:DateUtil.getDateOfHaveAllTime(klgMap.get("effectEndTime").toString()))
-				.field("startTime", klgMap.get("startTime") == null?false:DateUtil.getDateOfHaveAllTime(klgMap.get("startTime").toString()))
-				.field("endTime", klgMap.get("endTime") == null?false:DateUtil.getDateOfHaveAllTime(klgMap.get("endTime").toString()))
-				.field("vids", klgMap.get("vids").toString())
-				.field("mongoId", klgMap.get("mongoId").toString())
-				.field("lastUpdatedTime", klgMap.get("lastUpdatedTime") == null?false:DateUtil.getDateOfHaveAllTime(klgMap.get("lastUpdatedTime").toString()))
-				.field("templateId", Long.valueOf(klgMap.get("templateId").toString()))
-				.endObject();
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return xContentBuilder;
-	}
-	
-	/**
 	 * 构建json put 原型
 	 * @param klgMap
 	 * @return
@@ -81,17 +52,12 @@ public class KnowledgeJsonBuilder {
 		json.put("vids", newVids);
 		json.put("mongoId", klgMap.get("mongoId").toString());
 		json.put("templateId", Long.valueOf(klgMap.get("templateId").toString()));
-		
+		json.put("locIds", Long.valueOf(klgMap.get("locIds").toString()));
+		json.put("locationName", klgMap.get("locationName").toString());
+		json.put("templateDisplayName", klgMap.get("templateDisplayName").toString());
+		json.put("templateName", klgMap.get("templateName").toString());
+		json.put("clickNum", klgMap.get("clickNum") == null?0:klgMap.get("clickNum").toString());
 		return json;
 	}
 	
-	public static void main(String[] args) {
-		String ss = "1";
-		String[] list = ss.split(",");
-		List<Long> newVids = new ArrayList<Long>();
-		for(String aa : list){
-			newVids.add(Long.valueOf(aa));
-		}
-		System.out.println(JSONArray.toJSONString(newVids));
-	}
 }
