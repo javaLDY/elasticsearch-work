@@ -82,7 +82,8 @@ public class QueryKlgListService {
 		InternalFilter isStartAggregation = response.getAggregations().get("isStart");
 		isStart = isStartAggregation.getDocCount();
 		searchResult.put("isStart", isStart);
-		searchResult.put("isUsing", total - (isExpire + isStart));
+		isUsing = total - (isExpire + isStart);
+		searchResult.put("isUsing", isUsing);
 		JSONArray templateAttregationNum = new JSONArray();
 		Terms isExpireAgg = response.getAggregations().get("template");
 		for (Terms.Bucket entry : isExpireAgg.getBuckets()) {  
