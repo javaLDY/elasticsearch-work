@@ -1,0 +1,8 @@
+CREATE TABLE `summary_attr` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `template_id` bigint(20) DEFAULT NULL,
+  `value` varchar(255) DEFAULT NULL,
+  `update_time` date DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+

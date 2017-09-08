@@ -8,29 +8,11 @@
 			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
 	default-autowire="byName">
 
-	<bean id="sql_getKnowledges" class="java.lang.String">
+	<bean id="sql_getSummaryAttrByTemplateId" class="java.lang.String">
 		<constructor-arg>
 			<value>
 			<![CDATA[
-			SELECT
-				k.`name`,
-				k.knowledge_id knowledgeId,
-				k.knowledge_versioned_id AS knowledgeVersionedId,
-				k.effect_start_time effectStartTime,
-				k.effect_end_time effectEndTime,
-				k.start_time startTime,
-				k.end_time endTime,
-				k.vids,
-				k.mongo_id mongoId,
-				k.last_updated_time lastUpdatedTime
-			FROM
-				knowledges k
-			WHERE
-				is_deleted = 1
-			AND is_published = 1
-			AND state = 10 
-			AND knowledge_id 
-			LIMIT ?,?
+			select value from summary_attr where template_id = :templateId
 			]]>
 			</value>
 		</constructor-arg>
