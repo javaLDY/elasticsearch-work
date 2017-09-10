@@ -7,7 +7,10 @@ import org.apache.commons.collections.CollectionUtils;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.text.Text;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.bucket.filter.InternalFilter;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -101,10 +104,33 @@ public class QueryKlgListService {
 	public static void main(String[] args) {
 //		getKnowledgeDetail("123344");
 		SearchRequest request = new SearchRequest();
-		request.setKeyword("套餐");
-		request.setChannel("3");
-		request.setLocationId("31410");
-//		queryKlgListByKeyword(request);
+		request.setKeyword("校园电话");
+		queryKlgListByKeywordImproveAccuracy(request);
+	}
+	
+	/**
+	 * 通过mathc_phrase的slop提高搜索的精准度 slop 关键字的偏移量
+	 * @param searchRequest
+	 */
+	public static void queryKlgListByKeywordImproveAccuracy(SearchRequest searchRequest){
+		TransportClient client = TransportUtil.buildClient();
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		boolQueryBuilder.must(QueryBuilders.matchQuery("name", searchRequest.getKeyword()));
+		boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("name", searchRequest.getKeyword()).slop(50));
+		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_INDEX).setTypes(IndexRelationConstant.KLG_TYPE)
+				.setQuery(boolQueryBuilder)
+				.setFrom(0)
+				.setSize(15)
+				.execute().actionGet();
+		SearchHit[] searchHits = searchResponse.getHits().getHits();
+		JSONArray jsonArray = new JSONArray();
+		if(searchHits.length > 0){
+			for(SearchHit searchHit : searchHits){
+				JSONObject json = JSONObject.parseObject(searchHit.getSourceAsString());
+				jsonArray.add(json);
+			}
+		}
+		System.out.println(jsonArray);
 	}
 	
 	public String contentMapToString(List<Map<String, Object>> contentListMap){
