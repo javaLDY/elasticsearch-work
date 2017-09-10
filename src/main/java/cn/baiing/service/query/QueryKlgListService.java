@@ -117,6 +117,7 @@ public class QueryKlgListService {
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
 		boolQueryBuilder.must(QueryBuilders.matchQuery("name", searchRequest.getKeyword()));
 		boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("name", searchRequest.getKeyword()).slop(50));
+//		QueryBuilders.functionScoreQuery(QueryBuilders.matchPhraseQuery("name", searchRequest.getKeyword()));
 		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_INDEX).setTypes(IndexRelationConstant.KLG_TYPE)
 				.setQuery(boolQueryBuilder)
 				.setFrom(0)
