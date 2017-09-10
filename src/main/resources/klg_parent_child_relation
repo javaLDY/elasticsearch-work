@@ -1,0 +1,85 @@
+PUT /klg
+{
+  "mappings": {
+    "klg_type":{
+      "properties": {
+        "name":{
+          "type": "string",
+          "analyzer": "ik_max_word"
+        },
+        "knowledgeId":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "knowledgeVersionedId":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "vids":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "mongoId":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "templateId":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "locIds":{
+          "type": "integer"
+        },
+        "locationName":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "templateDisplayName":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "templateName":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "clickNum":{
+          "type": "integer"
+        },
+        "effectStartTime":{
+          "type": "date"
+        },
+        "effectEndTime":{
+          "type": "date"
+        },
+        "startTime":{
+          "type": "date"
+        },
+        "endTime":{
+          "type": "date"
+        },
+        "lastUpdatedTime":{
+          "type": "date"
+        }
+      }
+    },
+    "klg_numeric_type":{
+      "_parent": {
+        "type": "klg_type"
+      },
+      "properties": {
+        "knowledgeVersionedId":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "keyId":{
+          "type": "string",
+          "index": "not_analyzed"
+        },
+        "value":{
+          "type": "string",
+          "index": "not_analyzed"
+        }
+      }
+    }
+  }
+}

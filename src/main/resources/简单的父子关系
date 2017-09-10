@@ -1,0 +1,89 @@
+PUT /cn
+{
+  "mappings": {
+    "baiing":{
+      "properties": {
+        "name":{
+          "type": "string"
+        },
+        "address":{
+          "type": "string"
+        }
+      }
+    },
+    "employee":{
+      "properties": {
+        "name":{
+          "type": "string"
+        },
+        "age":{
+          "type": "integer"
+        }
+      },
+       "_parent": {
+        "type": "baiing"
+      }
+    }
+  }
+}
+
+GET cn/_mapping
+
+PUT /cn/baiing/1
+{
+  "name":"百应科技",
+  "address":"北京"
+}
+
+PUT /cn/baiing/2
+{
+  "name":"会跑科技",
+  "address":"南京"
+}
+
+GET /cn/baiing/_search
+{
+  "query": {
+    "match_all": {}
+  }
+}
+
+PUT /cn/employee/1?parent=1
+{
+  "name":"ldy",
+  "age":18 
+}
+
+PUT /cn/employee/2?parent=2
+{
+  "name":"da liang",
+  "age":18
+}
+
+GET /cn/employee/_search
+{
+  "query": {
+    "has_parent": {
+      "type": "baiing",
+      "query": {
+        "match_phrase": {
+          "name": "百应科技"
+        }
+      }
+    }
+  }
+}
+
+GET /cn/baiing/_search
+{
+  "query": {
+    "has_child": {
+      "type": "employee",
+      "query": {
+        "match": {
+          "name": "da liang"
+        }
+      }
+    }
+  }
+}

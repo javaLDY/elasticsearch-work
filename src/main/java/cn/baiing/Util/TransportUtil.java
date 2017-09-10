@@ -21,6 +21,7 @@ public class TransportUtil {
 		try {
 			Settings settings = Settings.builder().put("client.transport.sniff", true).build();  
 			TransportClient client = new PreBuiltTransportClient(settings)  
+                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300))
                     .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));  
 			return client;
 		} catch (UnknownHostException e) {
