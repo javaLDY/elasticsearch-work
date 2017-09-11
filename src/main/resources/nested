@@ -1,0 +1,36 @@
+PUT /company
+{
+  "mappings": {
+    "bumen":{
+      "properties": {
+        "employee":{
+          "type": "nested",
+          "properties": {
+            "name":{"type":"string"},
+            "age":{"type":"string"}
+          }
+        },
+        "name":{
+          "type": "string"
+        },
+        "address":{
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+
+GET /company/bumen/_search
+{
+  "query": {
+    "nested": {
+      "path": "employee",
+      "query": {
+        "match": {
+          "employee.age": "19"
+        }
+      }
+    }
+  }
+}
