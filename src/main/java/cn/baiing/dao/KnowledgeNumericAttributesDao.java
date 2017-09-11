@@ -1,9 +1,11 @@
 package cn.baiing.dao;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import cn.baiing.dao.util.BaseUtil;
@@ -20,4 +22,12 @@ public class KnowledgeNumericAttributesDao extends BaseUtil{
 		return simpleDao.getNamedParameterJdbcTemplate().queryForList(sql, paramMap);
 	}
 
+	@Autowired
+	private String sql_getKnowledgeNumericAttrByKnowledgeversionedId;
+	
+	public List<Map<String, Object>> getKnowledgeNumericAttrByKnowledgeversionedId(String knowledgeVersionedId){
+		paramMap = new HashMap<String, Object>();
+		paramMap.put("knowledgeVersionedId", knowledgeVersionedId);
+		return simpleDao.getNamedParameterJdbcTemplate().queryForList(sql_getKnowledgeNumericAttrByKnowledgeversionedId, paramMap);
+	}
 }

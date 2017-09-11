@@ -37,6 +37,18 @@ public class CreateKlgIndexMappingService {
 					.startObject("templateDisplayName").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("templateName").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("clickNum").field("type", "integer").endObject()
+					.startObject("attrs").field("type", "nested")
+					.startObject(IndexRelationConstant.PROPERTIES)
+					.startObject("keyId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("value").field("type", "text").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("knowledgeVersionedId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("dataType").field("type", "integer").endObject()
+					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("currentUnit").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("sequence").field("type", "integer").endObject()
+					.startObject("displayName").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.endObject()
+					.endObject()
 					.endObject().endObject().endObject();
 			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_INDEX).type(IndexRelationConstant.KLG_TYPE).source(klgMapping);
 			client.admin().indices().putMapping(mappingRequest).actionGet();

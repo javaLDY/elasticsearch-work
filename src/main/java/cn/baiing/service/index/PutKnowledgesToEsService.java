@@ -44,4 +44,30 @@ public class PutKnowledgesToEsService {
 		
 		bulkProcessor.close();
 	}
+	
+	public void buldPutKnowledgesWithAttrToEs(List<Map<String, Object>> knowledges){
+		String knowledgeId = null;
+		TransportClient client = TransportUtil.buildClient();
+		BulkProcessor bulkProcessor = TransportUtil.bulkProcess(client);
+		try {
+			if(CollectionUtils.isNotEmpty(knowledges)){
+				try {
+					for(Map<String, Object> map : knowledges){
+						knowledgeId = map.get("knowledgeId").toString();
+						IndexRequest request = new IndexRequest();
+						request.index(IndexRelationConstant.KLG_INDEX).type(IndexRelationConstant.KLG_TYPE).id(knowledgeId)
+						.source(KnowledgeJsonBuilder.createKlgJsonByKlgMap(map));
+	                    bulkProcessor.add(request);
+					}
+				} catch (Exception e) {
+					System.out.println("失败的知识ID：" + knowledgeId);
+					System.out.println(e);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		bulkProcessor.close();
+	}
 }

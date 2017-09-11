@@ -27,20 +27,20 @@ public class EsTest {
 //		request.index("cn").type("employee").parent("1").source(json);
 //		bulkProcessor.add(request);
 		
-		client.admin().indices().prepareCreate("shengfen").execute().actionGet();
+		client.admin().indices().prepareCreate("company").execute().actionGet();
 		try {
 			XContentBuilder klgMapping = XContentFactory.jsonBuilder().startObject()
-					.startObject("shengfenType").startObject(IndexRelationConstant.PROPERTIES)
+					.startObject("bumen").startObject(IndexRelationConstant.PROPERTIES)
 					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
-					.startObject("level").field("type", "integer").endObject()
-					.endObject().endObject().endObject()
-					.startObject("shiType")
-					.startObject("parent").field("type","shengfenType").endObject()
+					.startObject("address").field("type", "string").endObject()
+					.startObject("employee").field("type", "nested")
 					.startObject(IndexRelationConstant.PROPERTIES)
 					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
-					.startObject("level").field("type", "integer").endObject()
-					.endObject().endObject();
-			PutMappingRequest mappingRequest = Requests.putMappingRequest("shengfen").source(klgMapping);
+					.startObject("age").field("type", "integer").endObject()
+					.endObject()
+					.endObject()
+					.endObject().endObject().endObject();
+			PutMappingRequest mappingRequest = Requests.putMappingRequest("company").type("bumen").source(klgMapping);
 			client.admin().indices().putMapping(mappingRequest).actionGet();
 		} catch (IOException e) {
 			e.printStackTrace();

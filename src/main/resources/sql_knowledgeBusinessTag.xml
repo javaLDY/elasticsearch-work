@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+			http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+			http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd"
+	default-autowire="byName">
+
+	<bean id="sql_getKnowledgeBusinessTagByKnowledgeId" class="java.lang.String">
+		<constructor-arg>
+			<value>
+			<![CDATA[
+			SELECT
+				kbt.business_tag_id as value,
+			    kbt.knowledge_versioned_id knowledgeVersionedId,
+				'businessTag' as dataType,
+				null as name,
+				null as displayName,
+				0 as sequence
+			FROM
+				knowledge_business_tags kbt
+			WHERE
+			kbt.is_deleted = 0
+			AND kbt.knowledge_versioned_id = :knowledgeVersionedId
+			]]>
+			</value>
+		</constructor-arg>
+	</bean>
+</beans>

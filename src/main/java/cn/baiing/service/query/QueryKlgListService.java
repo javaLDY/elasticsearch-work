@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.text.Text;
@@ -103,9 +104,10 @@ public class QueryKlgListService {
 	
 	public static void main(String[] args) {
 //		getKnowledgeDetail("123344");
-		SearchRequest request = new SearchRequest();
-		request.setKeyword("校园电话");
-		queryKlgListByKeywordImproveAccuracy(request);
+//		SearchRequest request = new SearchRequest();
+//		request.setKeyword("校园电话");
+//		queryKlgListByKeywordImproveAccuracy(request);
+		queryKlgListByAttrs();
 	}
 	
 	/**
@@ -118,6 +120,28 @@ public class QueryKlgListService {
 		boolQueryBuilder.must(QueryBuilders.matchQuery("name", searchRequest.getKeyword()));
 		boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("name", searchRequest.getKeyword()).slop(50));
 //		QueryBuilders.functionScoreQuery(QueryBuilders.matchPhraseQuery("name", searchRequest.getKeyword()));
+		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_INDEX).setTypes(IndexRelationConstant.KLG_TYPE)
+				.setQuery(boolQueryBuilder)
+				.setFrom(0)
+				.setSize(15)
+				.execute().actionGet();
+		SearchHit[] searchHits = searchResponse.getHits().getHits();
+		JSONArray jsonArray = new JSONArray();
+		if(searchHits.length > 0){
+			for(SearchHit searchHit : searchHits){
+				JSONObject json = JSONObject.parseObject(searchHit.getSourceAsString());
+				jsonArray.add(json);
+			}
+		}
+		System.out.println(jsonArray);
+	}
+	
+	public static void queryKlgListByAttrs(){
+		TransportClient client = TransportUtil.buildClient();
+		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
+		boolQueryBuilder.must(QueryBuilders.matchQuery("name", "套餐"));
+		boolQueryBuilder.must(QueryBuilders.nestedQuery("attrs",
+				QueryBuilders.termQuery("attrs.value", "2"),ScoreMode.Avg));
 		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_INDEX).setTypes(IndexRelationConstant.KLG_TYPE)
 				.setQuery(boolQueryBuilder)
 				.setFrom(0)

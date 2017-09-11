@@ -49,6 +49,8 @@ public class KnowledgeJsonBuilder {
 		for(String ss : vids){
 			newVids.add(Long.valueOf(ss));
 		}
+		List<Map<String, Object>> attrsMap = (List<Map<String, Object>>) klgMap.get("attrs");
+		json.put("attrs", attrsMap);
 		json.put("vids", newVids);
 		json.put("mongoId", klgMap.get("mongoId").toString());
 		json.put("templateId", Long.valueOf(klgMap.get("templateId").toString()));

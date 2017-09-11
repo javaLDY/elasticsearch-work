@@ -69,4 +69,36 @@ public class KnowledgeDao {
 				+ "AND k.knowledge_id IN ("+newKnowledgeIds+")";
 		return simpleDao.getNamedParameterJdbcTemplate().queryForList(sql, paramMap);
 	}
+	
+	public Map<String, Object> getKnowledgeByKvId(String knowledgeVersionedId){
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("knowledgeVersionedId", knowledgeVersionedId);
+		String sql = "SELECT"
+				+ " k.`name`,"
+				+ " k.knowledge_id knowledgeId,"
+				+ " k.knowledge_versioned_id AS knowledgeVersionedId,"
+				+ " k.effect_start_time effectStartTime,"
+				+ " k.effect_end_time effectEndTime,"
+				+ " k.start_time startTime,"
+				+ " k.end_time endTime,"
+				+ " k.vids,"
+				+ " k.mongo_id mongoId,"
+				+ " k.last_updated_time lastUpdatedTime,"
+				+ " k.template_id templateId,"
+				+ " k.loc_ids locIds,"
+				+ " loc.`name` AS locationName,"
+				+ " t.display_name AS templateDisplayName,"
+				+ " t.`name` AS templateName,"
+				+ " pcn.click_num AS clickNum"
+				+ " FROM knowledges k "
+				+ "INNER JOIN locations loc ON k.loc_ids = loc.id "
+				+ "INNER JOIN templates t ON k.template_id = t.id "
+				+ "LEFT JOIN praise_click_number pcn ON k.knowledge_id = pcn.knowledge_id "
+				+ "WHERE "
+				+ "k.is_deleted = 1 "
+				+ "AND k.is_published = 1 "
+				+ "AND k.state = 10 "
+				+ "AND k.knowledge_id =:knowledgeVersionedId";
+		return simpleDao.getNamedParameterJdbcTemplate().queryForMap(sql, paramMap);
+	}
 }

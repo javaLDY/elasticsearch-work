@@ -89,7 +89,8 @@ public class StartPutAllDataToEsService {
 			}
 			System.out.println("--------------------------------开始灌入知识主题数据----------------------------------------");
 			//灌入知识主体数据
-			List<Map<String, Object>> knowledges = knowledgeService.getKnowlegesByKvid(knowledgeVersionedIds);
+//			List<Map<String, Object>> knowledges = knowledgeService.getKnowlegesByKvid(knowledgeVersionedIds);
+			List<Map<String, Object>> knowledges = knowledgeService.getKnowledgeWithAttrsByKvId(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledges)){
 				putKnowledgesToEsService.bulkPutKnowledgesToEs(knowledges);
 			}
@@ -112,11 +113,11 @@ public class StartPutAllDataToEsService {
 //				putKnowledgeDateToEsService.bulkPutKnowledgeDateToEs(knowledgeDates);
 //			}
 			//灌入知识数值类型数据
-			List<Map<String, Object>> knowledgeNumerices = knowledgeNumericAttributesService.getKnowledgeNumberAttributes(knowledgeVersionedIds);
-			if(CollectionUtils.isNotEmpty(knowledgeNumerices)){
-				System.out.println("拉完了---numeric");
-				putKnowledgeNumericToEsService.bulkPutKnowledgeNumericToEs(knowledgeNumerices);
-			}
+//			List<Map<String, Object>> knowledgeNumerices = knowledgeNumericAttributesService.getKnowledgeNumberAttributes(knowledgeVersionedIds);
+//			if(CollectionUtils.isNotEmpty(knowledgeNumerices)){
+//				System.out.println("拉完了---numeric");
+//				putKnowledgeNumericToEsService.bulkPutKnowledgeNumericToEs(knowledgeNumerices);
+//			}
 //			//灌入知识短信类型数据
 //			List<Map<String, Object>> knowledgeSmsList = knowledgeSmsAttributesService.getKnowledgeSmsAttributes(knowledgeVersionedIds);
 //			if(CollectionUtils.isNotEmpty(knowledgeSmsList)){

@@ -6,8 +6,10 @@ import java.net.UnknownHostException;
 import java.util.Map;
 
 import org.apache.lucene.queryparser.xml.QueryBuilderFactory;
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -21,18 +23,40 @@ import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
+import cn.baiing.Util.TransportUtil;
+import cn.baiing.model.IndexRelationConstant;
+
 public class TestService {
 	
 	private static String index = "ldy_index";
 	private static String type = "ldy_type";
 	
 	public static void main(String[] args) {
-		Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+//		Settings settings = Settings.builder().put("cluster.name", "elasticsearch").build();
+//		try {
+//			TransportClient client = new PreBuiltTransportClient(settings)
+//					.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
+//			queryByField(client, "是个", "title");
+//		} catch (UnknownHostException e) {
+//			e.printStackTrace();
+//		}
+		TransportClient client = TransportUtil.buildClient();
+		client.admin().indices().prepareCreate("company").execute().actionGet();
 		try {
-			TransportClient client = new PreBuiltTransportClient(settings)
-					.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));
-			queryByField(client, "是个", "title");
-		} catch (UnknownHostException e) {
+			XContentBuilder klgMapping = XContentFactory.jsonBuilder().startObject()
+					.startObject("bumen").startObject(IndexRelationConstant.PROPERTIES)
+					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("address").field("type", "string").endObject()
+					.startObject("employee").field("type", "nested")
+					.startObject(IndexRelationConstant.PROPERTIES)
+					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("age").field("type", "integer").endObject()
+					.endObject()
+					.endObject()
+					.endObject().endObject().endObject();
+			PutMappingRequest mappingRequest = Requests.putMappingRequest("company").type("bumen").source(klgMapping);
+			client.admin().indices().putMapping(mappingRequest).actionGet();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

@@ -8,10 +8,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import cn.baiing.dao.util.BaseUtil;
 import cn.baiing.dao.util.SimpleDao;
 
 @Repository
-public class KnowledgeBusinessTagsDao {
+public class KnowledgeBusinessTagsDao extends BaseUtil{
 
 	@Autowired
 	private SimpleDao simpleDao;
@@ -24,5 +25,14 @@ public class KnowledgeBusinessTagsDao {
 				+ " FROM knowledge_business_tags"
 				+ " WHERE knowledge_versioned_id IN ("+ newKnowledgeIds +") AND is_deleted = 0";
 		return simpleDao.getNamedParameterJdbcTemplate().queryForList(sql, paramMap);
+	}
+	
+	@Autowired
+	private String sql_getKnowledgeBusinessTagByKnowledgeId;
+	
+	public List<Map<String, Object>> getKnowledgeBusinessTagByKnowledgeId(String knowledgeVersionedId){
+		paramMap = new HashMap<String, Object>();
+		paramMap.put("knowledgeVersionedId", knowledgeVersionedId);
+		return simpleDao.getNamedParameterJdbcTemplate().queryForList(sql_getKnowledgeBusinessTagByKnowledgeId, paramMap);
 	}
 }
