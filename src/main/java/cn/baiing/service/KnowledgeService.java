@@ -43,6 +43,7 @@ public class KnowledgeService {
 	public List<Map<String, Object>> getKnowledgeWithAttrsByKvId(List<String> knowledgeVersionedIds){
 		List<Map<String, Object>> result = new ArrayList<Map<String,Object>>();
 		if(CollectionUtils.isNotEmpty(knowledgeVersionedIds)){
+			long startTime = System.currentTimeMillis();
 			for(String knowledgeVersionedId : knowledgeVersionedIds){
 				List<Map<String, Object>> attrs = new ArrayList<Map<String,Object>>();
 				Map<String, Object> klgMap = knowledgeDao.getKnowledgeByKvId(knowledgeVersionedId);
@@ -54,6 +55,8 @@ public class KnowledgeService {
 				klgMap.put("attrs", attrs);
 				result.add(klgMap);
 			}
+			long endTime = System.currentTimeMillis();
+			System.out.println("每批数据循环所用的时间" + (endTime - startTime));
 		}
 		return result;
 	}
