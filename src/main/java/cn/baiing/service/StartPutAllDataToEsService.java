@@ -83,14 +83,14 @@ public class StartPutAllDataToEsService {
 		int totalSize = 0;
 		long startTime = System.currentTimeMillis();
 		while(true){
-			List<String> knowledgeVersionedIds = knowledgeService.getKnowledgeVersionedIds(startPos, pageSize);
+			List<Long> knowledgeVersionedIds = knowledgeService.getKnowledgeVersionedIds(startPos, pageSize);
 			if(CollectionUtils.isEmpty(knowledgeVersionedIds)){
 				break;
 			}
 			System.out.println("--------------------------------开始灌入知识主题数据----------------------------------------");
 			//灌入知识主体数据
 //			List<Map<String, Object>> knowledges = knowledgeService.getKnowlegesByKvid(knowledgeVersionedIds);
-			List<Map<String, Object>> knowledges = knowledgeService.getKnowledgeWithAttrsByKvId(knowledgeVersionedIds);
+			List<Map> knowledges = knowledgeService.getKnowledgeWithAttrsByKvId(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledges)){
 				putKnowledgesToEsService.bulkPutKnowledgesToEs(knowledges);
 			}

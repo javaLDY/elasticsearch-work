@@ -13,9 +13,11 @@ import cn.baiing.datatype.NumericWithUnit;
 import cn.baiing.db.client.AttachmentServiceClient;
 import cn.baiing.db.client.KnowledgeServiceClient;
 import cn.baiing.db.client.TemplateKeyServiceClient;
+import cn.baiing.db.client.TemplateServiceClient;
 import cn.baiing.db.model.Attachment;
 import cn.baiing.db.model.Knowledge;
 import cn.baiing.db.model.ParameterValue;
+import cn.baiing.db.model.Template;
 import cn.baiing.db.model.TemplateKey;
 import cn.baiing.exception.BadRequestException;
 import cn.baiing.exception.ForbiddenException;
@@ -27,8 +29,8 @@ import com.alibaba.fastjson.JSONObject;
 
 public class GetKnowledgeAttrsFromDb {
 
-	public JSONArray getKnowledgeAttr(List<Long> knowledgeVersionedIds){
-		JSONArray attr = new JSONArray();
+	public static JSONArray getKnowledgeAttr(List<Long> knowledgeVersionedIds){
+		JSONArray resultList = new JSONArray();
 		List<Knowledge> klgList = new ArrayList<Knowledge>();
 		try {
 			klgList =  KnowledgeServiceClient.getInstance().getKnowledgesByKnowledgeVersionedIds(knowledgeVersionedIds);
@@ -42,6 +44,8 @@ public class GetKnowledgeAttrsFromDb {
 		if(CollectionUtils.isNotEmpty(klgList)){
 			try {
 				for(Knowledge klg : klgList){
+					JSONObject json = getKnowledgeByKlgVersioned(klg);
+					JSONArray attr = new JSONArray();
 					Id2Entity id2Entity = new Id2Entity(klg);
 					AttributeValueConvertor abc = new AttributeValueConvertor(klg,id2Entity);
 					Map<Long, List<ParameterValue<Long>>> attachmentWithExpType = abc.getAttachmentWithExpType();
@@ -60,8 +64,10 @@ public class GetKnowledgeAttrsFromDb {
 								ids.add(Long.valueOf(paraMap.getKeyId()));
 								attachmentIds.add(Long.valueOf(paraMap.getValue()));
 							}
-							attachment = AttachmentServiceClient.getInstance().getAttachments(attachmentIds);
-							JSONObject tempAttrValueJson = createAttrAttachments(attachment, ids);
+							JSONObject tempAttrValueJson = getTemplateAttrValueByTemplateId(ids);
+							tempAttrValueJson.put("value", attachmentIds);
+//							attachment = AttachmentServiceClient.getInstance().getAttachments(attachmentIds);
+//							JSONObject tempAttrValueJson = createAttrAttachments(attachment, ids);
 							attr.add(tempAttrValueJson);	
 						}
 					}
@@ -106,7 +112,7 @@ public class GetKnowledgeAttrsFromDb {
 								if(tempAttrValueJson.getString("unit") != null){
 									tempAttrValueJson.remove("unit");
 								}
-								tempAttrValueJson.put("value", paraMap.getValue());
+								tempAttrValueJson.put("value", paraMap.getValue().toString());
 								attr.add(tempAttrValueJson);	
 							}
 						}
@@ -215,12 +221,15 @@ public class GetKnowledgeAttrsFromDb {
 							}
 						}
 					}
+					json.put("attrs", attr);
+					resultList.add(json);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		return attr;
+		
+		return resultList;
 	}
 	
 	/**
@@ -258,7 +267,7 @@ public class GetKnowledgeAttrsFromDb {
 			for(TemplateKey tem : templateList){
 				String name = tem.getName();
 				String displayName = tem.getDisplayName();
-				tempalteJson.put("id", tem.getId());
+				tempalteJson.put("id", tem.getId().toString());
 				tempalteJson.put("name", name);
 				tempalteJson.put("displayName", displayName);
 				tempalteJson.put("dataType", tem.getDataType().getId());
@@ -279,4 +288,64 @@ public class GetKnowledgeAttrsFromDb {
 		}
 		return tempalteJson;
 	}
+	
+	/**
+	 * 封装knowledge的基本信息
+	 * @param klgVersioned
+	 * @return
+	 */
+	private static JSONObject getKnowledgeByKlgVersioned(Knowledge klg){
+		JSONObject json = new JSONObject();
+		if (klg != null) {
+			json.put("name", klg.getName());
+			json.put("vids", klg.getVids());
+			json.put("knowledgeVersionedId", klg.getKnowledgeVersionedId());
+			json.put("knowledgeId", klg.getKnowledgeId());
+			json.put("locIds", klg.getLocIds());
+			json.put("templateId", klg.getTemplateId()); 
+			json.put("templateName", getTemplateById(klg.getTemplateId()).getName());
+			json.put("templateDisplayName", getTemplateById(klg.getTemplateId()).getDisplayName());
+			json.put("mongoId", klg.getMongoId());
+			if(klg.getPublishTime() != null){
+				json.put("publishTime", DateUtil.simpleDateFormat.format(klg.getPublishTime()));
+			}else{
+				json.put("publishTime", klg.getPublishTime());
+			}
+			if(klg.getStartTime() != null){
+				json.put("startTime", DateUtil.simpleDateFormatAll.format(klg.getStartTime()));
+			}else{
+				json.put("startTime", klg.getStartTime()) ;
+			}
+			if(klg.getEndTime() != null){
+				json.put("endTime", DateUtil.simpleDateFormatAll.format(klg.getEndTime()));
+			}else{
+				json.put("endTime", klg.getEndTime());
+			}
+			if(klg.getEffectStartTime() != null){
+				json.put("effectStartTime", DateUtil.simpleDateFormatAll.format(klg.getEffectStartTime()));
+			}else{
+				json.put("effectStartTime", klg.getEffectStartTime());
+			}
+			if(klg.getEffectEndTime() != null){
+				json.put("effectEndTime", DateUtil.simpleDateFormatAll.format(klg.getEffectEndTime()));
+			}else{
+				json.put("effectEndTime", klg.getEffectEndTime());
+			}
+		}
+		return json;
+	}
+	
+	private static Template getTemplateById(long templateId){
+		Template tem = new Template();
+		try {
+			tem = TemplateServiceClient.getInstance().getTemplateById(templateId);
+		} catch (ForbiddenException e) {
+			e.printStackTrace();
+		} catch (BadRequestException e) {
+			e.printStackTrace();
+		} catch (InternalServerException e) {
+			e.printStackTrace();
+		}
+		return tem;
+	} 
 }
