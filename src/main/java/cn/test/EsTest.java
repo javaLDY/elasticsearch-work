@@ -19,23 +19,20 @@ public class EsTest {
 
 	public static void main(String[] args) {
 		TransportClient client = TransportUtil.buildClient();
-//		BulkProcessor bulkProcessor = TransportUtil.bulkProcess(client);
-//		JSONObject json = new JSONObject();
-//		json.put("name", "dapan");
-//		json.put("age", 22);
-//		IndexRequest request = new IndexRequest();
-//		request.index("cn").type("employee").parent("1").source(json);
-//		bulkProcessor.add(request);
-		
 		client.admin().indices().prepareCreate("company").execute().actionGet();
 		try {
 			XContentBuilder klgMapping = XContentFactory.jsonBuilder().startObject()
 					.startObject("bumen").startObject(IndexRelationConstant.PROPERTIES)
 					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("address").field("type", "string").endObject()
+					.startObject("description").field("type", "text").endObject()
 					.startObject("employee").field("type", "nested")
 					.startObject(IndexRelationConstant.PROPERTIES)
-					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("name").field("type", "text")
+					.startObject("fields")
+					.startObject("nameKeyowrd").field("type", "keyword").endObject()
+					.endObject()
+					.endObject()
 					.startObject("age").field("type", "integer").endObject()
 					.endObject()
 					.endObject()
