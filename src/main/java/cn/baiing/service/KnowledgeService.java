@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import cn.baiing.Util.GetKnowledgeAttrsFromDb;
 import cn.baiing.dao.KnowledgeDao;
 import cn.baiing.dao.KnowledgeNumericAttributesDao;
+import cn.baiing.util.Constants;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -66,5 +67,10 @@ public class KnowledgeService {
 			System.out.println("每批数据循环所用的时间" + (endTime - startTime));
 		}
 		return result;
+	}
+	
+	public static void main(String[] args) {
+		System.out.println(System.getenv("baiingRoot"));
+		System.out.println(System.getenv("JAVA_HOME"));
 	}
 }

@@ -19,7 +19,7 @@ public class PutKnowledgesToEsService {
 	/**
 	 * 向es中灌入数据
 	*/
-	public void bulkPutKnowledgesToEs(List<Map<String, Object>> knowledges){
+	public void bulkPutKnowledgesToEs(List<Map> knowledges){
 		String knowledgeId = null;
 		TransportClient client = TransportUtil.buildClient();
 		BulkProcessor bulkProcessor = TransportUtil.bulkProcess(client);
