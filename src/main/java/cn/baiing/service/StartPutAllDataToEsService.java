@@ -79,7 +79,7 @@ public class StartPutAllDataToEsService {
 	 */
 	public void startPullAllDataToEs(){
 		int startPos = 0;
-		int pageSize = 3000;
+		int pageSize = 10;
 		int totalSize = 0;
 		long startTime = System.currentTimeMillis();
 		while(true){
@@ -131,11 +131,11 @@ public class StartPutAllDataToEsService {
 //				System.out.println("拉完了---text");
 //			}
  			totalSize += knowledgeVersionedIds.size();
-			if(knowledgeVersionedIds.size() < 3000){
+			if(knowledgeVersionedIds.size() < 10){
 				break;
 			}
 			
-			startPos += 3000;
+			startPos += 10;
 		}
 		long endTime = System.currentTimeMillis();
 		
