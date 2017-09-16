@@ -1,0 +1,4 @@
+PUT /_all/_settings
+{
+  "max_result_window":1000000
+}

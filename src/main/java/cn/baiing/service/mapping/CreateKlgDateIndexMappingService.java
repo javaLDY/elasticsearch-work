@@ -23,7 +23,7 @@ public class CreateKlgDateIndexMappingService {
 					.startObject(IndexRelationConstant.KLG_DATE_TYPE).startObject(IndexRelationConstant.PROPERTIES)
 					.startObject("knowledgeVersionedId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("keyId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
-					.startObject("date").field("type", "date").endObject()
+					.startObject("date").field("type", "date").field("format", "yyyy-MM-dd HH:mm:ss").endObject()
 					.endObject().endObject().endObject();
 			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_DATE_INDEX).type(IndexRelationConstant.KLG_DATE_TYPE).source(klgMapping);
 			 client.admin().indices().putMapping(mappingRequest).actionGet();

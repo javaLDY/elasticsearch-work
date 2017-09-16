@@ -30,8 +30,8 @@ public class KnowledgeService {
 	 * 获取上线的只是ID
 	 * @return
 	 */
-	public List<Long> getKnowledgeVersionedIds(int startPos, int pageSize){
-		List<Long> knowledgeVersionedIds = knowledgeDao.getknowledgeVersionedIds(startPos, pageSize);
+	public List<String> getKnowledgeVersionedIds(int startPos, int pageSize){
+		List<String> knowledgeVersionedIds = knowledgeDao.getknowledgeVersionedIds(startPos, pageSize);
 		return knowledgeVersionedIds;
 	}
 

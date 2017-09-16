@@ -28,7 +28,31 @@ public class DataType {
 		if(DataType.DATE_DATATYPE.contains(dataType)){
 			return IndexRelationConstant.KLG_DATE_INDEX;
 		}
-		return null;
+		return "-1";
+	}
+	
+	/**
+	 * 判断是否属于某个类型，返回boolean
+	 * @param dataType
+	 * @return
+	 */
+	public static boolean belongDataType(String dataType){
+		boolean isBelong = false;
+		if(DataType.NUMERIC_DATATYPE.contains(dataType)){
+			isBelong = true;
+			return isBelong;
+		}
+		
+		if(DataType.TEXT_DATATYPE.contains(dataType)){
+			isBelong = true;
+			return isBelong;
+		}
+		
+		if(DataType.DATE_DATATYPE.contains(dataType)){
+			isBelong = true;
+			return isBelong;
+		}
+		return isBelong;
 	}
 
 }

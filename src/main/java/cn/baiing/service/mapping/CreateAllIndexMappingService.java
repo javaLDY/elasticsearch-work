@@ -51,6 +51,8 @@ public class CreateAllIndexMappingService {
 			createKlgTextIndexMappingService.createKnowledgeTextIndexMapping();
 			//创建知识数值Mapping
 			createKlgNumericIndexMappingService.createNumericIndexMapping();
+			//创建知识主体和知识attr-Mapping
+			createKlgIndexMappingService.createKlgAndAttrIndex();
 			System.out.println("--------------------------------创建知识mapping成功----------------------------------------");
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -21,17 +21,17 @@ public class KnowledgeDao {
 	@Autowired
 	private SimpleDao simpleDao;
 	
-	public List<Long> getknowledgeVersionedIds(int startPos, int pageSize){
+	public List<String> getknowledgeVersionedIds(int startPos, int pageSize){
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		final List<Long> resultList = new ArrayList<Long>();
+		final List<String> resultList = new ArrayList<String>();
 		paramMap.put("startPos", startPos);
 		paramMap.put("pageSize", pageSize);
 		String sql = "select knowledge_versioned_id from knowledges WHERE is_deleted = 1 AND is_published = 1 AND state = 10 LIMIT :startPos, :pageSize";
-		return simpleDao.getNamedParameterJdbcTemplate().query(sql, paramMap, new ResultSetExtractor<List<Long>>() {
+		return simpleDao.getNamedParameterJdbcTemplate().query(sql, paramMap, new ResultSetExtractor<List<String>>() {
 
-			public List<Long> extractData(ResultSet rs) throws SQLException, DataAccessException {
+			public List<String> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				while(rs.next()){
-					resultList.add(rs.getLong("knowledge_versioned_id"));
+					resultList.add(rs.getString("knowledge_versioned_id"));
 				}
 				return resultList;
 			}

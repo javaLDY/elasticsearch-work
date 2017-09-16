@@ -25,8 +25,8 @@ public class CreateTemplateIndexMappingService {
 					.startObject("name").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("displayName").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("sequence").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
-					.startObject("creationTime").field("type", "date").endObject()
-					.startObject("lastUpdatedTime").field("type", "date").endObject()
+					.startObject("creationTime").field("format", "yyyy-MM-dd HH:mm:ss").field("type", "date").endObject()
+					.startObject("lastUpdatedTime").field("format", "yyyy-MM-dd HH:mm:ss").field("type", "date").endObject()
 					.startObject("parentCatalogId").field("type", "long").endObject()
 					.endObject().endObject().endObject();
 			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.TEMPLATE_INDEX).type(IndexRelationConstant.TEMPLATE_TYPE).source(klgMapping);

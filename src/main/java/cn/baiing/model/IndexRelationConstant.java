@@ -46,4 +46,7 @@ public class IndexRelationConstant {
 	
 	public static String TEMPLATE_KEY_TYPE = "template_key_type";
 
+	public static String KLG_ATTR_INDEX = "klg_attr_index";
+	
+	public static String KLG_ATTR_TYPE = "klg_attr_type";
 }

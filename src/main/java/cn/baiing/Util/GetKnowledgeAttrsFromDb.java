@@ -41,6 +41,7 @@ public class GetKnowledgeAttrsFromDb {
 		} catch (InternalServerException e) {
 			e.printStackTrace();
 		}
+		long startTime = System.currentTimeMillis();
 		if(CollectionUtils.isNotEmpty(klgList)){
 			try {
 				for(Knowledge klg : klgList){
@@ -228,7 +229,8 @@ public class GetKnowledgeAttrsFromDb {
 				e.printStackTrace();
 			}
 		}
-		
+		long endTime = System.currentTimeMillis();
+		System.out.println("拼装属性所用时间:" + (endTime - startTime));
 		return resultList;
 	}
 	

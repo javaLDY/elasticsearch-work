@@ -10,6 +10,8 @@ public class DateUtil {
 	
 	public static SimpleDateFormat simpleDateFormatAll = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+	public static SimpleDateFormat dateIos8601simpleDateFormatAll = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	
 	/**
 	 * 获取yyyy-MM-dd HH:mm:ss 类型的Date
 	 * @param time

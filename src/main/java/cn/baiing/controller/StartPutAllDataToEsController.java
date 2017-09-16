@@ -22,4 +22,9 @@ public class StartPutAllDataToEsController {
 	public void startPutAllTemplateAttrsToService(){
 		startPutAllDataToEsService.startPutAllTemplateAttrsToEs();
 	}
+	
+	@RequestMapping("/startPutKnowledgeAndKlgAttrToEs")
+	public void startPutKnowledgeAndKlgAttrToEs(){
+		startPutAllDataToEsService.startPutKnowledgeAndKlgAttrToEs();
+	}
 }

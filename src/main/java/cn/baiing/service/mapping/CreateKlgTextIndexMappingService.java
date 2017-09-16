@@ -32,4 +32,7 @@ public class CreateKlgTextIndexMappingService {
 		}
 	}
 
+	public static void main(String[] args) {
+		createKnowledgeTextIndexMapping();
+	}
 }

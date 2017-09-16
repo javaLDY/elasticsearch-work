@@ -18,7 +18,7 @@ public class KnowledgeDateJsonBuilder {
 		json.put("knowledgeVersionedId", map.get("knowledgeVersionedId").toString());
 		json.put("keyId", map.get("keyId").toString());
 		if(map.get("date") != null){
-			json.put("date", DateUtil.getDateOfHaveAllTime(map.get("date").toString()));
+			json.put("date", DateUtil.formatDateAllToString(DateUtil.getDateOfHaveAllTime(map.get("date").toString())));
 		}
 		return json;
 	}
