@@ -96,7 +96,7 @@ public class KnowledgeJsonBuilder {
 		json.put("mongoId", klgMap.get("mongoId").toString());
 		json.put("templateId", Long.valueOf(klgMap.get("templateId").toString()));
 		json.put("locIds", Long.valueOf(klgMap.get("locIds").toString()));
-		json.put("locationName", klgMap.get("locationName").toString());
+//		json.put("locationName", klgMap.get("locationName").toString());
 		json.put("templateDisplayName", klgMap.get("templateDisplayName").toString());
 		json.put("templateName", klgMap.get("templateName").toString());
 		json.put("clickNum", klgMap.get("clickNum") == null?0:klgMap.get("clickNum").toString());
