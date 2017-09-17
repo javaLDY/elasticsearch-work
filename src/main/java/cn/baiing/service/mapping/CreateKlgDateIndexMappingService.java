@@ -32,4 +32,7 @@ public class CreateKlgDateIndexMappingService {
 		}
 	}
 
+	public static void main(String[] args) {
+		createKlgDateIndexMapping();
+	}
 }

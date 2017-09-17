@@ -11,7 +11,6 @@ import org.elasticsearch.common.text.Text;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.aggregations.bucket.filter.InternalFilter;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightField;
@@ -37,15 +36,22 @@ public class QueryKlgListService {
 	 * 查询知识列表根据关键字
 	 * @param searchRequest
 	 */
-	public void queryKlgListByKeyword(SearchRequest searchRequest){
+	public static String queryKlgListByKeyword(SearchRequest searchRequest){
 		JSONObject searchResult = new JSONObject();
 		long total = 0;
 		long isUsing = 0;
 		long isExpire = 0;
 		long isStart = 0;
+		
+		long startTime = System.currentTimeMillis();
+		System.out.println();
 		TransportClient client = TransportUtil.buildClient();
-		SearchResponse response = client.prepareSearch(IndexRelationConstant.KLG_INDEX)
-							.setTypes(IndexRelationConstant.KLG_TYPE)
+		long endTime = System.currentTimeMillis();
+		System.out.println("建立连接:" + (endTime - startTime));
+		
+		long startTime1 = System.currentTimeMillis();
+		SearchResponse response = client.prepareSearch(IndexRelationConstant.KLG_ATTR_INDEX)
+							.setTypes(IndexRelationConstant.KLG_ATTR_TYPE)
 							.setQuery(CombineSearchRequstToEsUnit.combineSelectKeywordQueryBuilder(searchRequest))
 							.highlighter(CombineSearchRequstToEsUnit.combineHighLingtRule("name"))
 							.addAggregation(CombineSearchRequstToEsUnit.combineTemplateAggregationBuilder())
@@ -56,8 +62,13 @@ public class QueryKlgListService {
 							.setSize(15)
 							.execute()
 							.actionGet();
+		long endTime1 = System.currentTimeMillis();
+		System.out.println("搜索返回:" + (endTime1 - startTime1));
+		
 		total = response.getHits().getTotalHits();
 		SearchHit[] klgListHits = response.getHits().getHits();
+		
+		long startTime2 = System.currentTimeMillis();
 		JSONArray resultArray = new JSONArray();
 		if(klgListHits.length > 0){
 			for(SearchHit searchHit : klgListHits){
@@ -70,11 +81,11 @@ public class QueryKlgListService {
 				for(Text text : nameTexts){
 					name += text;
 				}
-				String knowledgeVersionedId = singleKlg.getString("knowledgeVersionedId");
-				String templateId = singleKlg.getString("templateId");
-				List<Map<String, Object>> content = queryContentService.getContentByTemplateId(templateId, knowledgeVersionedId);
-				singleKlg.put("name", name);
-				singleKlg.put("content", contentMapToString(content));
+//				String knowledgeVersionedId = singleKlg.getString("knowledgeVersionedId");
+//				String templateId = singleKlg.getString("templateId");
+//				List<Map<String, Object>> content = queryContentService.getContentByTemplateId(templateId, knowledgeVersionedId);
+//				singleKlg.put("name", name);
+//				singleKlg.put("content", contentMapToString(content));
 				resultArray.add(singleKlg);
 			}
 		}
@@ -98,16 +109,27 @@ public class QueryKlgListService {
             templateAttregationNum.add(json);
         }
 		searchResult.put("templateAttregationNum", templateAttregationNum);
-		System.out.println(searchResult.toJSONString());
+		long endTime2 = System.currentTimeMillis();
+		System.out.println("逻辑处理:" + (endTime2 - startTime2));
+		
+		long startTime3 = System.currentTimeMillis();
 		client.close();
+		long endTime3 = System.currentTimeMillis();
+		System.out.println("关闭连接:" + (endTime3 - startTime3));
+		return searchResult.toJSONString();
 	}
 	
 	public static void main(String[] args) {
 //		getKnowledgeDetail("123344");
-//		SearchRequest request = new SearchRequest();
-//		request.setKeyword("校园电话");
+		SearchRequest request = new SearchRequest();
+		request.setKeyword("4G套餐");
+		long startTime = System.currentTimeMillis();
+		String result = queryKlgListByKeyword(request);
+		long endTime = System.currentTimeMillis();
+		System.out.println("本次搜索用时:" + (endTime - startTime));
+		System.out.println(result);
 //		queryKlgListByKeywordImproveAccuracy(request);
-		queryKlgListByAttrs();
+//		queryKlgListByAttrs();
 	}
 	
 	/**
@@ -120,7 +142,7 @@ public class QueryKlgListService {
 		boolQueryBuilder.must(QueryBuilders.matchQuery("name", searchRequest.getKeyword()));
 		boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("name", searchRequest.getKeyword()).slop(50));
 //		QueryBuilders.functionScoreQuery(QueryBuilders.matchPhraseQuery("name", searchRequest.getKeyword()));
-		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_INDEX).setTypes(IndexRelationConstant.KLG_TYPE)
+		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_ATTR_INDEX).setTypes(IndexRelationConstant.KLG_ATTR_TYPE)
 				.setQuery(boolQueryBuilder)
 				.setFrom(0)
 				.setSize(15)

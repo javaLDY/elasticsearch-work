@@ -103,7 +103,7 @@ public class QueryKlgDetailService {
 				IndexRelationConstant.KLG_NUMERIC_TYPE,
 				IndexRelationConstant.KLG_SMS_TYPE,
 				IndexRelationConstant.KLG_TEXT_TYPE)
-		.setQuery(boolQueryBuilder).setSize(1000000)
+		.setQuery(boolQueryBuilder).setSize(100000)
 		.execute().actionGet();
 		
 		SearchHit[] klgAttrs = searchKlgAttrResponse.getHits().getHits();
@@ -178,7 +178,7 @@ public class QueryKlgDetailService {
 //		getKnowledgeDetail("100036");
 //		getTemplateKeys();
 		List<String> ids = new ArrayList<String>();
-		ids.add("100022");
+		ids.add("100114");
 		ids.add("100048");
 		ids.add("100020");
 		ids.add("100044");

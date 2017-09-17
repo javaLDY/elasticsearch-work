@@ -84,7 +84,7 @@ public class StartPutAllDataToEsService {
 	 */
 	public void startPullAllDataToEs(){
 		int startPos = 0;
-		int pageSize = 10;
+		int pageSize = 3000;
 		int totalSize = 0;
 		long startTime = System.currentTimeMillis();
 		while(true){
@@ -96,38 +96,38 @@ public class StartPutAllDataToEsService {
 			//灌入知识主体数据
 			List<Map<String, Object>> knowledges = knowledgeService.getKnowlegesByKvid(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledges)){
-				System.out.println("拉完了---knowledges");
 				putKnowledgesToEsService.bulkPutKnowledgesToEs(knowledges);
+				System.out.println("拉完了---knowledges");
 			}
 			//灌入知识相关附件类型数据
 			List<Map<String, Object>> knowledgeAttachments = knowledgeAttachmentAttributesService.getKnowledgeAttachmentAttributes(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledgeAttachments)){
-				System.out.println("拉完了---attachment");
 				putKnowledgeAttachmentAttributesToEsService.bulkPutKnowledgeAttachmentAttributesToEs(knowledgeAttachments);
+				System.out.println("拉完了---attachment");
 			}
 			//灌入知识归属关系类型数据
 			List<Map<String, Object>> knowledgeBusinessTags = knowledgeBussinessTagService.getKnowledgeBusinessTags(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledgeBusinessTags)){
-				System.out.println("拉完了---business");
 				putKnowledgeBusinessTagToEsService.bulkPutKnowledgeBusinessTagToEs(knowledgeBusinessTags);
+				System.out.println("拉完了---business");
 			}
 			//灌入知识时间数据
 			List<Map<String, Object>> knowledgeDates = knowledgeDateAttributesService.getKnowledgeDateAttributes(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledgeDates)){
-				System.out.println("拉完了---date");
 				putKnowledgeDateToEsService.bulkPutKnowledgeDateToEs(knowledgeDates);
+				System.out.println("拉完了---date");
 			}
 			//灌入知识数值类型数据
 			List<Map<String, Object>> knowledgeNumerices = knowledgeNumericAttributesService.getKnowledgeNumberAttributes(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledgeNumerices)){
-				System.out.println("拉完了---numeric");
 				putKnowledgeNumericToEsService.bulkPutKnowledgeNumericToEs(knowledgeNumerices);
+				System.out.println("拉完了---numeric");
 			}
 			//灌入知识短信类型数据
 			List<Map<String, Object>> knowledgeSmsList = knowledgeSmsAttributesService.getKnowledgeSmsAttributes(knowledgeVersionedIds);
 			if(CollectionUtils.isNotEmpty(knowledgeSmsList)){
-				System.out.println("拉完了---sms");
 				putKnowledgeSmsToEsService.bulkPutKnowledgeSmsToEs(knowledgeSmsList);
+				System.out.println("拉完了---sms");
 			}
 			//灌入知识文本类型数据
 			List<Map<String, Object>> knowledgeTextAttributes = knowledgeTextAttributesService.getKnowledgeTextAttributes(knowledgeVersionedIds);
@@ -136,11 +136,11 @@ public class StartPutAllDataToEsService {
 				System.out.println("拉完了---text");
 			}
  			totalSize += knowledgeVersionedIds.size();
-			if(knowledgeVersionedIds.size() < 10){
+			if(knowledgeVersionedIds.size() < 3000){
 				break;
 			}
 			
-			startPos += 10;
+			startPos += 3000;
 		}
 		long endTime = System.currentTimeMillis();
 		
@@ -190,7 +190,7 @@ public class StartPutAllDataToEsService {
 				break;
 			}
 			
-			startPos += 3000;
+			startPos += 1000;
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println("总共拉取了:" + totalSize);

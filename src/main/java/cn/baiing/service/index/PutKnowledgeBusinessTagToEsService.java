@@ -17,21 +17,23 @@ import cn.baiing.model.KnowledgeBusinessTagJsonBuilder;
 public class PutKnowledgeBusinessTagToEsService {
 	
 	public void bulkPutKnowledgeBusinessTagToEs(List<Map<String, Object>> knowledgeBusinessTags){
-		String knowledgeVersionedId = null;
+		String id = null;
 		TransportClient client = TransportUtil.buildClient();
 		BulkProcessor bulkProcessor = TransportUtil.bulkProcess(client);
 		try {
 			if(CollectionUtils.isNotEmpty(knowledgeBusinessTags)){
 				try {
 					for(Map<String, Object> map : knowledgeBusinessTags){
-						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
+						id = map.get("id").toString();
 						IndexRequest request = new IndexRequest();
-						request.index(IndexRelationConstant.KLG_BUSINESSTAG_INDEX).type(IndexRelationConstant.KLG_BUSINESSTAG_TYPE)
+						request.index(IndexRelationConstant.KLG_BUSINESSTAG_INDEX)
+						.type(IndexRelationConstant.KLG_BUSINESSTAG_TYPE)
+						.id(id)
 						.source(KnowledgeBusinessTagJsonBuilder.createKlgBusinessTagJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}
 				} catch (Exception e) {
-					System.out.println("失败的知识ID：" + knowledgeVersionedId);
+					System.out.println("失败的知识ID：" + id);
 					System.out.println(e);
 				}
 			}

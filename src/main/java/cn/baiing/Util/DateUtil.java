@@ -2,7 +2,13 @@ package cn.baiing.Util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
+
+import javax.swing.text.DateFormatter;
 
 public class DateUtil {
 	
@@ -12,6 +18,7 @@ public class DateUtil {
 	
 	public static SimpleDateFormat dateIos8601simpleDateFormatAll = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 	
+	public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	/**
 	 * 获取yyyy-MM-dd HH:mm:ss 类型的Date
 	 * @param time
@@ -64,4 +71,10 @@ public class DateUtil {
 		return time;
 	}
 
+	public static void main(String[] args) {
+		LocalTime localTime = LocalTime.now();
+		LocalDate localDate = LocalDate.now();
+		System.out.println(localDate);
+		System.out.println(dateTimeFormatter.format(LocalDateTime.now()));
+	}
 }

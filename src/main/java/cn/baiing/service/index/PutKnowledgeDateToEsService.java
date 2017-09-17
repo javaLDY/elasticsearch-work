@@ -17,21 +17,23 @@ import cn.baiing.model.KnowledgeDateJsonBuilder;
 public class PutKnowledgeDateToEsService {
 
 	public void bulkPutKnowledgeDateToEs(List<Map<String, Object>> knowledgeDates){
-		String knowledgeVersionedId = null;
+		String id = null;
 		TransportClient client = TransportUtil.buildClient();
 		BulkProcessor bulkProcessor = TransportUtil.bulkProcess(client);
 		try {
 			if(CollectionUtils.isNotEmpty(knowledgeDates)){
 				try {
 					for(Map<String, Object> map : knowledgeDates){
-						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
+						id = map.get("id").toString();
 						IndexRequest request = new IndexRequest();
-						request.index(IndexRelationConstant.KLG_DATE_INDEX).type(IndexRelationConstant.KLG_DATE_TYPE)
+						request.index(IndexRelationConstant.KLG_DATE_INDEX)
+						.type(IndexRelationConstant.KLG_DATE_TYPE)
+						.id(id)
 						.source(KnowledgeDateJsonBuilder.createKlgDateJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}
 				} catch (Exception e) {
-					System.out.println("失败的知识ID：" + knowledgeVersionedId);
+					System.out.println("失败的知识ID：" + id);
 					System.out.println(e);
 				}
 			}

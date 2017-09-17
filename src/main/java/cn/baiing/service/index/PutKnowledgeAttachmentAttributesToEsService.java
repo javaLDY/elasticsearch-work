@@ -17,21 +17,23 @@ import cn.baiing.model.KnowledgeAttachmentJsonBuilder;
 public class PutKnowledgeAttachmentAttributesToEsService {
 
 	public void bulkPutKnowledgeAttachmentAttributesToEs(List<Map<String, Object>> knowledgeAttachments){
-		String knowledgeVersionedId = null;
+		String id = null;
 		TransportClient client = TransportUtil.buildClient();
 		BulkProcessor bulkProcessor = TransportUtil.bulkProcess(client);
 		try {
 			if(CollectionUtils.isNotEmpty(knowledgeAttachments)){
 				try {
 					for(Map<String, Object> map : knowledgeAttachments){
-						knowledgeVersionedId = map.get("knowledgeVersionedId").toString();
+						id = map.get("id").toString();
 						IndexRequest request = new IndexRequest();
-						request.index(IndexRelationConstant.KLG_ATTACHMENT_INDEX).type(IndexRelationConstant.KLG_ATTACHMENT_TYPE)
+						request.index(IndexRelationConstant.KLG_ATTACHMENT_INDEX)
+						.type(IndexRelationConstant.KLG_ATTACHMENT_TYPE)
+						.id(id)
 						.source(KnowledgeAttachmentJsonBuilder.createKlgAttachmentJsonByMap(map));
 	                    bulkProcessor.add(request);
 					}
 				} catch (Exception e) {
-					System.out.println("失败的知识ID：" + knowledgeVersionedId);
+					System.out.println("失败的知识ID：" + id);
 					System.out.println(e);
 				}
 			}

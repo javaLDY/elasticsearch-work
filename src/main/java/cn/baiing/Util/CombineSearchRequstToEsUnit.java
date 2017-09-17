@@ -1,5 +1,6 @@
 package cn.baiing.Util;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
@@ -93,7 +94,8 @@ public class CombineSearchRequstToEsUnit {
 	 * @return
 	 */
 	public static AggregationBuilder combineIsExpireAggregationBuilder(){
-		AggregationBuilder isExpireAggregation = AggregationBuilders.filter("isExpire", QueryBuilders.rangeQuery("endTime").lte(new Date().getTime()));
+		AggregationBuilder isExpireAggregation = AggregationBuilders.filter("isExpire", QueryBuilders.rangeQuery("endTime")
+				.lte(DateUtil.dateTimeFormatter.format(LocalDateTime.now())));
 		return isExpireAggregation;
 	}
 	
@@ -102,7 +104,8 @@ public class CombineSearchRequstToEsUnit {
 	 * @return
 	 */
 	public static AggregationBuilder combineIsStartAggregationBuilder(){
-		AggregationBuilder isExpireAggregation = AggregationBuilders.filter("isStart", QueryBuilders.rangeQuery("startTime").gte(new Date().getTime()));
+		AggregationBuilder isExpireAggregation = AggregationBuilders.filter("isStart", QueryBuilders.rangeQuery("startTime")
+				.gte(DateUtil.dateTimeFormatter.format(LocalDateTime.now())));
 		return isExpireAggregation;
 	}
 }

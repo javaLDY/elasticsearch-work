@@ -51,8 +51,8 @@ public class TransportUtil {
                     }
                 })
                 .setBulkActions(3000)
-                .setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB))
-                .setFlushInterval(TimeValue.timeValueSeconds(20))
+                .setBulkSize(new ByteSizeValue(100, ByteSizeUnit.MB))
+                .setFlushInterval(TimeValue.timeValueSeconds(200))
                 .setConcurrentRequests(1)
                 .build();
         return bulkProcessor;
