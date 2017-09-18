@@ -17,17 +17,24 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 public class TransportUtil {
 	
+	public static TransportClient client = null;
+	
 	public static TransportClient buildClient(){
-		try {
-			Settings settings = Settings.builder().put("client.transport.sniff", true).build();  
-			TransportClient client = new PreBuiltTransportClient(settings)  
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300))
-                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300));  
-			return client;
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
+		if(client == null){
+			try {
+				long startTime = System.currentTimeMillis();
+				Settings settings = Settings.builder().put("client.transport.sniff", true).build();  
+				client = new PreBuiltTransportClient(settings)  
+	                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300))
+	                    .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("127.0.0.1"), 9300)); 
+				long endTime = System.currentTimeMillis();
+				System.out.println("建立连接用时:" + (endTime - startTime));
+				return client;
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
 		}
-		return null;
+		return client;
 	}
 	
 	/**

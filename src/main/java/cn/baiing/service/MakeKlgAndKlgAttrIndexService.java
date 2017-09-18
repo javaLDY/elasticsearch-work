@@ -31,10 +31,6 @@ public class MakeKlgAndKlgAttrIndexService {
 	
 	private static Map<String, JSONObject> templateKeyAttrsMap = new HashMap<String, JSONObject>();
 	
-	static{
-		getTemplateKeys();
-	}
-
 	/**
 	 * 根据知识klgversionedId,得到知识主体
 	 * @param ids
@@ -53,7 +49,6 @@ public class MakeKlgAndKlgAttrIndexService {
 		        klgList.add(json);
 		    }
 		}
-		client.close();
 		return klgList;
 	}
 	
@@ -63,6 +58,7 @@ public class MakeKlgAndKlgAttrIndexService {
 	 * @return
 	 */
 	public static JSONArray getKnowledgeAttr(List<String> knowledgeVersionedIds){
+		getTemplateKeys();
 		TransportClient client = TransportUtil.buildClient();
 		JSONArray attr = new JSONArray();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
@@ -105,13 +101,20 @@ public class MakeKlgAndKlgAttrIndexService {
 						attrJson.put("displayName", templateKeysJson.getString("displayName"));
 						attrJson.put("templateId", templateKeysJson.getString("templateId"));
 						attr.add(attrJson);
+					}else if(attrJson.containsKey("businessTagId")){
+						
+						attrJson.put("dataType", "");
+						attrJson.put("name", "");
+						attrJson.put("displayName", "");
+						attrJson.put("templateId", "");
+						attrJson.put("businessTagValue", attrJson.getString("date"));
+						attr.add(attrJson);
 					}
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		client.close();
 		return attr;
 	}
 	
@@ -119,26 +122,27 @@ public class MakeKlgAndKlgAttrIndexService {
 	 * 获取所有的知识属性信息
 	 */
 	public static void getTemplateKeys(){
-		TransportClient client = TransportUtil.buildClient();
-		
-		long count = client.prepareSearch(IndexRelationConstant.TEMPLATE_KEY_INDEX)
+		if(templateKeyAttrsMap == null || templateKeyAttrsMap.isEmpty()){
+			TransportClient client = TransportUtil.buildClient();
+			
+			long count = client.prepareSearch(IndexRelationConstant.TEMPLATE_KEY_INDEX)
+					.setTypes(IndexRelationConstant.TEMPLATE_KEY_TYPE)
+					.execute().actionGet().getHits().getTotalHits();
+			
+			SearchResponse searchTemplateKeyAttrResponse = client.prepareSearch(IndexRelationConstant.TEMPLATE_KEY_INDEX)
 				.setTypes(IndexRelationConstant.TEMPLATE_KEY_TYPE)
-				.execute().actionGet().getHits().getTotalHits();
-		
-		SearchResponse searchTemplateKeyAttrResponse = client.prepareSearch(IndexRelationConstant.TEMPLATE_KEY_INDEX)
-			.setTypes(IndexRelationConstant.TEMPLATE_KEY_TYPE)
-			.setQuery(QueryBuilders.matchAllQuery())
-			.setSize((int)count)
-			.execute().actionGet();
-		SearchHit[] templateKeys = searchTemplateKeyAttrResponse.getHits().getHits();
-		if(templateKeys.length > 0){
-			for(SearchHit searchHit : templateKeys){
-				JSONObject attrJson = JSONObject.parseObject(searchHit.getSourceAsString());
-				String keyId = attrJson.getString("keyId");
-				templateKeyAttrsMap.put(keyId, attrJson);
+				.setQuery(QueryBuilders.matchAllQuery())
+				.setSize((int)count)
+				.execute().actionGet();
+			SearchHit[] templateKeys = searchTemplateKeyAttrResponse.getHits().getHits();
+			if(templateKeys.length > 0){
+				for(SearchHit searchHit : templateKeys){
+					JSONObject attrJson = JSONObject.parseObject(searchHit.getSourceAsString());
+					String keyId = attrJson.getString("keyId");
+					templateKeyAttrsMap.put(keyId, attrJson);
+				}
 			}
 		}
-		client.close();
 	}
 	
 	/**
@@ -163,5 +167,9 @@ public class MakeKlgAndKlgAttrIndexService {
 		}
 		return klgAndKlgAttrList;
 	}
+	
+//	public List<String> getBusinessTagByKnowledgeVersionedIds(){
+//		
+//	}
 	
 }

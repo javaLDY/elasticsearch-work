@@ -36,7 +36,7 @@ public class QueryKlgListService {
 	 * 查询知识列表根据关键字
 	 * @param searchRequest
 	 */
-	public static String queryKlgListByKeyword(SearchRequest searchRequest){
+	public JSONObject queryKlgListByKeyword(SearchRequest searchRequest){
 		JSONObject searchResult = new JSONObject();
 		long total = 0;
 		long isUsing = 0;
@@ -113,21 +113,20 @@ public class QueryKlgListService {
 		System.out.println("逻辑处理:" + (endTime2 - startTime2));
 		
 		long startTime3 = System.currentTimeMillis();
-		client.close();
 		long endTime3 = System.currentTimeMillis();
 		System.out.println("关闭连接:" + (endTime3 - startTime3));
-		return searchResult.toJSONString();
+		return searchResult;
 	}
 	
 	public static void main(String[] args) {
 //		getKnowledgeDetail("123344");
-		SearchRequest request = new SearchRequest();
-		request.setKeyword("4G套餐");
-		long startTime = System.currentTimeMillis();
-		String result = queryKlgListByKeyword(request);
-		long endTime = System.currentTimeMillis();
-		System.out.println("本次搜索用时:" + (endTime - startTime));
-		System.out.println(result);
+//		SearchRequest request = new SearchRequest();
+//		request.setKeyword("4G套餐");
+//		long startTime = System.currentTimeMillis();
+//		String result = queryKlgListByKeyword(request);
+//		long endTime = System.currentTimeMillis();
+//		System.out.println("本次搜索用时:" + (endTime - startTime));
+//		System.out.println(result);
 //		queryKlgListByKeywordImproveAccuracy(request);
 //		queryKlgListByAttrs();
 	}
