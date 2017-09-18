@@ -129,6 +129,10 @@ public class QueryKlgListService {
 //		System.out.println(result);
 //		queryKlgListByKeywordImproveAccuracy(request);
 //		queryKlgListByAttrs();
+		long startTime = System.currentTimeMillis();
+		queryKlgListByAttrs();
+		long endTime = System.currentTimeMillis();
+		System.out.println("总时间:" + (endTime - startTime));
 	}
 	
 	/**
@@ -160,14 +164,19 @@ public class QueryKlgListService {
 	public static void queryKlgListByAttrs(){
 		TransportClient client = TransportUtil.buildClient();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.must(QueryBuilders.matchQuery("name", "套餐"));
+//		boolQueryBuilder.must(QueryBuilders
+//				.matchQuery("name", "本业务主要面向大多数手机里储存着重要的个人隐私数据, 而又并不希望其他人看到这些数据"));
 		boolQueryBuilder.must(QueryBuilders.nestedQuery("attrs",
-				QueryBuilders.termQuery("attrs.value", "2"),ScoreMode.Avg));
-		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_INDEX).setTypes(IndexRelationConstant.KLG_TYPE)
+				QueryBuilders.matchQuery("attrs.value", "国内流量：不足100MB部分，按0.3元/MB收费，100MB-500MB免费"),ScoreMode.Avg)).minimumShouldMatch("100%");
+		boolQueryBuilder.must(QueryBuilders.termQuery("templateId", 50));
+		long startTime = System.currentTimeMillis();
+		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_ATTR_INDEX).setTypes(IndexRelationConstant.KLG_ATTR_TYPE)
 				.setQuery(boolQueryBuilder)
 				.setFrom(0)
-				.setSize(15)
+				.setSize(30)
 				.execute().actionGet();
+		long endTime = System.currentTimeMillis();
+		System.out.println("知识列表和属性结合时间:" + (endTime - startTime));
 		SearchHit[] searchHits = searchResponse.getHits().getHits();
 		JSONArray jsonArray = new JSONArray();
 		if(searchHits.length > 0){
