@@ -44,7 +44,7 @@ public class CreateKlgIndexMappingService {
 					.startObject("integerValue").field("type", "integer").endObject()
 					.startObject("dateValue").field("type", "date").field("format", "yyyy-MM-dd HH:mm:ss").endObject()
 					.startObject("unit").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
-					.startObject("value").field("type", "text")
+					.startObject("value").field("type", "text").field("analyzer", IndexRelationConstant.IK_ANALYZER_MAX_WORD)
 					.startObject("fields")
 					.startObject("valueKeyword").field("type", "keyword").field("ignore_above", "256")
 					.endObject()
