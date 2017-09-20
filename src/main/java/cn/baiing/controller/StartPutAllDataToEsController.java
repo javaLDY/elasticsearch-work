@@ -27,4 +27,14 @@ public class StartPutAllDataToEsController {
 	public void startPutKnowledgeAndKlgAttrToEs(){
 		startPutAllDataToEsService.startPutKnowledgeAndKlgAttrToEs();
 	}
+	
+	@RequestMapping("/startPutBasicKnowledgeAttributesToEs")
+	public void startPutBasicKnowledgeAttributesToEs(){
+		startPutAllDataToEsService.startPutBasicKnowledgeAttributesToEs();
+	}
+	
+	@RequestMapping("/startPutKnowledgeAttributesToEs")
+	public void startPutKnowledgeAttributesToEs(){
+		startPutAllDataToEsService.startPutKnowledgeAttributesToEs();
+	}
 }

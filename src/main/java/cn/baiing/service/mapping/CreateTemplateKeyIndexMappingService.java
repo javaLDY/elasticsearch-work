@@ -38,4 +38,8 @@ public class CreateTemplateKeyIndexMappingService {
 			e.printStackTrace();
 		}
 	}
+	
+	public static void main(String[] args) {
+		createTemplateIndexMapping();
+	}
 }

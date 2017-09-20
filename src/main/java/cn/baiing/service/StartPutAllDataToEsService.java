@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import cn.baiing.service.index.PutKnowledgeAndKlgAttrsToEsService;
 import cn.baiing.service.index.PutKnowledgeAttachmentAttributesToEsService;
+import cn.baiing.service.index.PutKnowledgeAttributesToEsService;
 import cn.baiing.service.index.PutKnowledgeBusinessTagToEsService;
 import cn.baiing.service.index.PutKnowledgeDateToEsService;
 import cn.baiing.service.index.PutKnowledgeNumericToEsService;
@@ -48,7 +49,15 @@ public class StartPutAllDataToEsService {
 	
 	@Autowired
 	private TemplateKeyService templateKeyService;
+	
+	@Autowired
+	private KnowledgeAttributesService knowledgeAttributesService;
+	
+	@Autowired
+	private MakeKlgAttributesIndexService makeKlgAttributesIndexService;
+	
 	///////////////////////////////////////////////////灌入es Service///////////////////////////////////////
+	
 	@Autowired
 	private PutKnowledgesToEsService putKnowledgesToEsService;
 	
@@ -78,6 +87,9 @@ public class StartPutAllDataToEsService {
 	
 	@Autowired
 	private PutKnowledgeAndKlgAttrsToEsService putKnowledgeAndKlgAttrsToEsService;
+	
+	@Autowired
+	private PutKnowledgeAttributesToEsService putKnowledgeAttributesToEsService;
 	
 	/**
 	 * 灌入知识主题和知识相关属性的数据
@@ -199,5 +211,63 @@ public class StartPutAllDataToEsService {
 //		List<String> knowledgeVersionedIds = new ArrayList<String>();
 //		knowledgeVersionedIds.add("104280");
 //		putKnowledgeAndKlgAttrsToEsService.putKnowledgeAndKlgAttrsToEs(knowledgeVersionedIds);
+	}
+	
+	/**
+	 * 将知识主体和属性得基本数据放到es中去
+	 */
+	public void startPutBasicKnowledgeAttributesToEs(){
+		int startPos = 0;
+		int pageSize = 1000;
+		int totalSize = 0;
+		long startTime = System.currentTimeMillis();
+		while(true){
+			List<String> knowledgeVersionedIds = knowledgeService.getKnowledgeVersionedIds(startPos, pageSize);
+			if(CollectionUtils.isEmpty(knowledgeVersionedIds)){
+				break;
+			}
+			System.out.println("--------------------------------开始灌入 "+startPos+" - "+pageSize+" 知识主体和知识相关属性数据----------------------------------------");
+			List<Map<String, Object>> knowledges = knowledgeAttributesService.getKnowledgeAttributes(knowledgeVersionedIds);
+			putKnowledgeAttributesToEsService.bulkPutBasicKlgAttributesToEs(knowledges);
+			totalSize += knowledgeVersionedIds.size();
+			if(knowledgeVersionedIds.size() < 1000){
+				break;
+			}
+			
+			startPos += 1000;
+		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("总共拉取了:" + totalSize);
+		System.out.println("总共花了:" + (endTime - startTime) + "ms");
+		System.out.println("--------------------------------结束灌入知识主体和知识相关属性数据----------------------------------------");
+	}
+	
+	/**
+	 * 将知识主体和属性的组合数据放到es中去
+	 */
+	public void startPutKnowledgeAttributesToEs(){
+		int startPos = 0;
+		int pageSize = 1000;
+		int totalSize = 0;
+		long startTime = System.currentTimeMillis();
+		while(true){
+			List<String> knowledgeVersionedIds = knowledgeService.getKnowledgeVersionedIds(startPos, pageSize);
+			if(CollectionUtils.isEmpty(knowledgeVersionedIds)){
+				break;
+			}
+			System.out.println("--------------------------------开始灌入 "+startPos+" - "+pageSize+" 知识主体和知识相关属性数据----------------------------------------");
+			Map<String, Map<String, Object>> knowledges = makeKlgAttributesIndexService.getKnowledgeAttr(knowledgeVersionedIds);
+			putKnowledgeAttributesToEsService.bulkPutKlgAttributesToEs(knowledges);
+			totalSize += knowledgeVersionedIds.size();
+			if(knowledgeVersionedIds.size() < 1000){
+				break;
+			}
+			
+			startPos += 1000;
+		}
+		long endTime = System.currentTimeMillis();
+		System.out.println("总共拉取了:" + totalSize);
+		System.out.println("总共花了:" + (endTime - startTime) + "ms");
+		System.out.println("--------------------------------结束灌入知识主体和知识相关属性数据----------------------------------------");
 	}
 }

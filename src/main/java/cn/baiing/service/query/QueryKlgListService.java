@@ -164,9 +164,9 @@ public class QueryKlgListService {
 	public static void queryKlgListByAttrs(){
 		TransportClient client = TransportUtil.buildClient();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.should(QueryBuilders.matchQuery("name", "大中专院校、技校学生退").analyzer(IndexRelationConstant.IK_ANALYZER_MAX_WORD));
+		boolQueryBuilder.should(QueryBuilders.matchQuery("name", "1643180").analyzer(IndexRelationConstant.IK_ANALYZER_MAX_WORD));
 		boolQueryBuilder.should(QueryBuilders.nestedQuery("attrs",
-				QueryBuilders.matchQuery("attrs.value", "大中专院校、技校学生退").minimumShouldMatch("75%")
+				QueryBuilders.matchQuery("attrs.value", "1643180").minimumShouldMatch("75%")
 				.analyzer(IndexRelationConstant.IK_ANALYZER_MAX_WORD),ScoreMode.Avg));
 //		boolQueryBuilder.must(QueryBuilders.termQuery("templateId", 50));
 		long startTime = System.currentTimeMillis();

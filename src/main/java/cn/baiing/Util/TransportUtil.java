@@ -85,7 +85,7 @@ public class TransportUtil {
                         System.out.println("happen fail = " + failure.getMessage() + " cause = " +failure.getCause());
                     }
                 })
-                .setBulkActions(1000)
+                .setBulkActions(10000)
                 .setBulkSize(new ByteSizeValue(1000, ByteSizeUnit.MB))
                 .setFlushInterval(TimeValue.timeValueSeconds(600))
                 .setConcurrentRequests(1)

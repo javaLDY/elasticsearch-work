@@ -49,4 +49,8 @@ public class IndexRelationConstant {
 	public static String KLG_ATTR_INDEX = "klg_attr_index";
 	
 	public static String KLG_ATTR_TYPE = "klg_attr_type";
+	
+	public static String KLG_BASIC_ATTR_INDEX = "klg_basic_attr_index";
+	
+	public static String KLG_BASIC_ATTR_TYPE = "klg_basic_attr_type";
 }
