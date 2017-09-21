@@ -106,7 +106,7 @@ public class CreateKlgAttributesIndexMappingService {
 	}
 
 	public static void main(String[] args) {
-//		createBasicKlgAndAttrIndex();
+		createBasicKlgAndAttrIndex();
 		createKlgAttributesIndex();
 	}
 }

@@ -132,7 +132,7 @@ public class KnowledgeAttributesJsonBuilder {
 		json.put("mongoId", klgMap.get("mongoId").toString());
 		json.put("templateId", klgMap.get("templateId").toString());
 		json.put("locIds", klgMap.get("locIds").toString());
-		json.put("clickNum", klgMap.get("clickNum") == null?0:klgMap.get("clickNum").toString());
+		json.put("clickNum", klgMap.get("clickNum") == null?"0":klgMap.get("clickNum").toString());
 		List<Map<String, Object>> attrsMap = (List<Map<String, Object>>) klgMap.get("attrs");
 		json.put("attrs", attrsMap);
 		return json;

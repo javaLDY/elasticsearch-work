@@ -1,3 +1,62 @@
 1.在搜索栏中增加 文章详情搜索，以增加准确度-再次确定需要添加文章详情搜索，才能精准搜索
 2.灌入知识主体和属性相关数据，比较慢，查看有无优化的办法
 3.中移数据问题
+
+GET klg_attr_index/klg_attr_type/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "nested": {
+            "path": "attrs",
+            "query": {
+              "match_phrase": {
+                "attrs.value": {
+                  "query": "数据流量类",
+                  "boost":30
+                }
+              }
+             }
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "name": {
+              "query": "数据流量类",
+              "boost":20
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "match": {
+            "byName": {
+              "query": "数据流量类",
+              "boost":10
+            }
+          }
+        }
+      ],
+      "should": [
+        {
+          "nested": {
+            "path": "attrs",
+            "query": {
+              "match": {
+                "attrs.value": {
+                  "query": "数据流量类",
+                  "minimum_should_match":"70%",
+                  "boost":5
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

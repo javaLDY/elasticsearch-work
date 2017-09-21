@@ -66,6 +66,9 @@ public class MakeKlgAttributesIndexService {
 								String currentUnit = klgAttrMap.get("currentUnit") == null?"":klgAttrMap.get("currentUnit").toString();
 								if(!index.equals("-1")){
 									String value = klgAttrMap.get("value").toString();
+									if(value.equals("0.0")){
+										value = "0";
+									}
 									if(index.equals(IndexRelationConstant.KLG_NUMERIC_INDEX)){
 										attrMap.put("integerValue", Unit.parse(value, currentUnit));
 										attrMap.put("value", Unit.parse(value, currentUnit));
@@ -86,9 +89,6 @@ public class MakeKlgAttributesIndexService {
 								}
 								attrMap.put("displayName", templateKeysJson.getString("displayName"));
 								String templateId = templateKeysJson.getString("templateId");
-//								if(templateId.contains(".")){
-//									templateId = templateId.split(",")[0];
-//								}
 								attrMap.put("templateId", templateId);
 								attr.add(attrMap);
 								//移除无用的value
@@ -111,6 +111,9 @@ public class MakeKlgAttributesIndexService {
 								try {
 								if(!index.equals("-1")){
 									String value = klgAttrMap.get("value").toString();
+									if(value.equals("0.0")){
+										value = "0";
+									}
 									if(index.equals(IndexRelationConstant.KLG_NUMERIC_INDEX)){
 										attrMap.put("integerValue", Unit.parse(value, currentUnit));
 										attrMap.put("value", Unit.parse(value, currentUnit));
@@ -129,9 +132,6 @@ public class MakeKlgAttributesIndexService {
 								attrMap.put("name", templateKeysJson.getString("name"));
 								attrMap.put("displayName", templateKeysJson.getString("displayName"));
 								String templateId = templateKeysJson.getString("templateId");
-//								if(templateId.contains(".")){
-//									templateId = templateId.split(",")[0];
-//								}
 								attrMap.put("templateId", templateId);
 								attr.add(attrMap);
 								//移除无用的value
