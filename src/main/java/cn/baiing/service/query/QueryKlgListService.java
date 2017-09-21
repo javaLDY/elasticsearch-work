@@ -164,10 +164,10 @@ public class QueryKlgListService {
 	public static void queryKlgListByAttrs(){
 		TransportClient client = TransportUtil.buildClient();
 		BoolQueryBuilder boolQueryBuilder = new BoolQueryBuilder();
-		boolQueryBuilder.should(QueryBuilders.matchQuery("name", "1643180").analyzer(IndexRelationConstant.IK_ANALYZER_MAX_WORD));
-		boolQueryBuilder.should(QueryBuilders.nestedQuery("attrs",
-				QueryBuilders.matchQuery("attrs.value", "1643180").minimumShouldMatch("75%")
-				.analyzer(IndexRelationConstant.IK_ANALYZER_MAX_WORD),ScoreMode.Avg));
+		boolQueryBuilder.must(QueryBuilders.matchQuery("name", "国际漫游流量 一带一路多国流量包 5天不限量").analyzer(IndexRelationConstant.IK_ANALYZER_MAX_WORD));
+//		boolQueryBuilder.should(QueryBuilders.nestedQuery("attrs",
+//				QueryBuilders.matchQuery("attrs.value", "1643180").minimumShouldMatch("75%")
+//				.analyzer(IndexRelationConstant.IK_ANALYZER_MAX_WORD),ScoreMode.Avg));
 //		boolQueryBuilder.must(QueryBuilders.termQuery("templateId", 50));
 		long startTime = System.currentTimeMillis();
 		SearchResponse searchResponse = client.prepareSearch(IndexRelationConstant.KLG_ATTR_INDEX).setTypes(IndexRelationConstant.KLG_ATTR_TYPE)

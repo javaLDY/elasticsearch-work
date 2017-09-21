@@ -10,6 +10,8 @@ import java.util.Date;
 
 import javax.swing.text.DateFormatter;
 
+import org.apache.commons.lang.StringUtils;
+
 public class DateUtil {
 	
 	public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -69,6 +71,25 @@ public class DateUtil {
 		String time = null;
 		time = simpleDateFormat.format(date);
 		return time;
+	}
+	
+	/**
+	 * 判断是否是时间
+	 * @param time
+	 * @return
+	 */
+	public static boolean isDate(String time) {
+		boolean isDate = false;
+		if(StringUtils.isNotBlank(time)){
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			try {
+				format.parse(time);
+				isDate = true;
+			} catch (ParseException e) {
+				isDate = false;
+			}
+		}
+		return isDate;
 	}
 
 	public static void main(String[] args) {
