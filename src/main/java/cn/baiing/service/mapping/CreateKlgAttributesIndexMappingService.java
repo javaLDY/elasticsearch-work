@@ -38,9 +38,9 @@ public class CreateKlgAttributesIndexMappingService {
 					.startObject("lastUpdatedTime").field("type", "date").field("format", "yyyy-MM-dd HH:mm:ss").endObject()
 					.startObject("templateId").field("type", "keyword").endObject()
 					.startObject("locIds").field("type", "keyword").endObject()
-					.startObject("clickNum").field("type", "integer").endObject()
+					.startObject("clickNum").field("type", "keyword").endObject()
 					.startObject("value").field("type", "keyword").field("ignore_above", "256").endObject()
-					.startObject("keyId").field("type", "keyword").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
+					.startObject("keyId").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.startObject("dataType").field("type", "integer").endObject()
 					.startObject("currentUnit").field("type", "string").field("index",IndexRelationConstant.NOT_ANALYZED).endObject()
 					.endObject()
@@ -49,7 +49,7 @@ public class CreateKlgAttributesIndexMappingService {
 			 PutMappingRequest mappingRequest = Requests.putMappingRequest(IndexRelationConstant.KLG_BASIC_ATTR_INDEX)
 					 .type(IndexRelationConstant.KLG_BASIC_ATTR_TYPE).source(klgMapping);
 			client.admin().indices().putMapping(mappingRequest).actionGet();
-		} catch (IOException e) {
+		} catch (IOException e) {      
 			e.printStackTrace();
 		}
 	}
@@ -106,7 +106,7 @@ public class CreateKlgAttributesIndexMappingService {
 	}
 
 	public static void main(String[] args) {
-		createBasicKlgAndAttrIndex();
+//		createBasicKlgAndAttrIndex();
 		createKlgAttributesIndex();
 	}
 }

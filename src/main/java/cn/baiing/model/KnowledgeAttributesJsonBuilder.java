@@ -1,5 +1,6 @@
 package cn.baiing.model;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +64,7 @@ public class KnowledgeAttributesJsonBuilder {
 		json.put("currentUnit", klgMap.get("currentUnit") == null?"":klgMap.get("currentUnit").toString());
 		json.put("klgAttrId", klgMap.get("klgAttrId").toString());
 		json.put("keyId", klgMap.get("keyId").toString());
-		json.put("clickNum", klgMap.get("clickNum") == null?0:klgMap.get("clickNum").toString());
+		json.put("clickNum", klgMap.get("clickNum") == null?"0":klgMap.get("clickNum").toString());
 		return json;
 	}
 	
@@ -94,31 +95,31 @@ public class KnowledgeAttributesJsonBuilder {
 		}
 		
 		if(klgMap.get("effectStartTime") != null){
-			json.put("effectStartTime", klgMap.get("effectStartTime").toString());
+			json.put("effectStartTime", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgMap.get("effectStartTime").toString())));
 		}
 		
 		if(klgMap.get("effectEndTime") != null){
-			json.put("effectEndTime", klgMap.get("effectEndTime").toString());
+			json.put("effectEndTime", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgMap.get("effectEndTime").toString())));
 		}
 		
 		if(klgMap.get("startTime") != null){
-			json.put("startTime", klgMap.get("startTime").toString());
+			json.put("startTime", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgMap.get("startTime").toString())));
 		}
 
 		if(klgMap.get("endTime") != null){
-			json.put("endTime", klgMap.get("endTime").toString());
+			json.put("endTime", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgMap.get("endTime").toString())));
 		}
 		
 		if(klgMap.get("publishTime") != null){
-			json.put("publishTime", klgMap.get("publishTime").toString());
+			json.put("publishTime", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgMap.get("publishTime").toString())));
 		}
 		
 		if(klgMap.get("lastUpdatedTime") != null){
-			json.put("lastUpdatedTime", klgMap.get("lastUpdatedTime").toString());
+			json.put("lastUpdatedTime", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgMap.get("lastUpdatedTime").toString())));
 		}
 		
 		if(klgMap.get("klgAttrUpdateTime") != null){
-			json.put("klgAttrUpdateTime", klgMap.get("klgAttrUpdateTime").toString());
+			json.put("klgAttrUpdateTime", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgMap.get("klgAttrUpdateTime").toString())));
 		}
 		
 		String[] vids = klgMap.get("channel").toString().split(",");
@@ -137,4 +138,12 @@ public class KnowledgeAttributesJsonBuilder {
 		return json;
 	}
 	
+	public static void main(String[] args) {
+		String time = "2017-03-21 22:45:05 ";
+		try {
+			System.out.println(DateUtil.simpleDateFormatAll.format(DateUtil.simpleDateFormatAll.parse(time)));
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
 }

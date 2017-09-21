@@ -16,7 +16,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 
+import cn.baiing.Util.DateUtil;
 import cn.baiing.Util.TransportUtil;
+import cn.baiing.Util.Unit;
 import cn.baiing.model.DataType;
 import cn.baiing.model.IndexRelationConstant;
 
@@ -55,70 +57,89 @@ public class MakeKlgAttributesIndexService {
 						List<Map<String, Object>> attr = (List<Map<String, Object>>) newKlgAttrMap.get("attrs");
 						if(newKlgAttrMap.containsKey("keyId") && !newKlgAttrMap.get("keyId").equals("0")){
 							String keyId = klgAttrMap.get("keyId").toString();
-							if(keyId.contains(".")){
-								keyId = keyId.split(",")[0];
-							}
-							JSONObject templateKeysJson = templateKeyAttrsMap.get(keyId);
-							attrMap.put("keyId", keyId);
-							attrMap.put("value", klgAttrMap.get("value").toString());
-							//判断属性类型，放入对应的值中，方便以后筛选，目前只针对数值和时间做特殊处理，其他均为-1
-							String index = DataType.belongKeyAttrIndex(klgAttrMap.get("dataType").toString());
-							if(!index.equals("-1")){
-//								if(index.equals(IndexRelationConstant.KLG_NUMERIC_INDEX)){
-//									attrMap.put("integerValue", klgAttrMap.get("value").toString());
-//								}
-								
-								if(index.equals(IndexRelationConstant.KLG_DATE_INDEX)){
-									attrMap.put("dateValue", klgAttrMap.get("value").toString());
+							if(templateKeyAttrsMap.containsKey(keyId)){
+								JSONObject templateKeysJson = templateKeyAttrsMap.get(keyId);
+								attrMap.put("keyId", keyId);
+								attrMap.put("value", klgAttrMap.get("value").toString());
+								//判断属性类型，放入对应的值中，方便以后筛选，目前只针对数值和时间做特殊处理，其他均为-1
+								String index = DataType.belongKeyAttrIndex(klgAttrMap.get("dataType").toString());
+								String currentUnit = klgAttrMap.get("currentUnit") == null?"":klgAttrMap.get("currentUnit").toString();
+								if(!index.equals("-1")){
+									String value = klgAttrMap.get("value").toString();
+									if(index.equals(IndexRelationConstant.KLG_NUMERIC_INDEX)){
+										attrMap.put("integerValue", Unit.parse(value, currentUnit));
+										attrMap.put("value", Unit.parse(value, currentUnit));
+									}
+									
+									if(index.equals(IndexRelationConstant.KLG_DATE_INDEX)){
+										boolean isDate = DateUtil.isDate(value);
+										if(isDate){
+											attrMap.put("dateValue", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgAttrMap.get("value").toString())));
+										}
+									}
 								}
+								attrMap.put("currentUnit", currentUnit);
+								try {
+									attrMap.put("name", templateKeysJson.getString("name"));
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								attrMap.put("displayName", templateKeysJson.getString("displayName"));
+								String templateId = templateKeysJson.getString("templateId");
+//								if(templateId.contains(".")){
+//									templateId = templateId.split(",")[0];
+//								}
+								attrMap.put("templateId", templateId);
+								attr.add(attrMap);
+								//移除无用的value
+								newKlgAttrMap.remove("value");
+								newKlgAttrMap.put("attrs", attr);
+								result.put(knowledgeVersionedId, newKlgAttrMap);
 							}
-							attrMap.put("name", templateKeysJson.getString("name"));
-							attrMap.put("displayName", templateKeysJson.getString("displayName"));
-							String templateId = templateKeysJson.getString("templateId");
-							if(templateId.contains(".")){
-								templateId = templateId.split(",")[0];
-							}
-							attrMap.put("templateId", templateId);
-							attr.add(attrMap);
-							newKlgAttrMap.put("clickNum", "0");
-							newKlgAttrMap.put("attrs", attr);
 						}
-						result.put(knowledgeVersionedId, newKlgAttrMap);
 					}else{
 						List<Map<String, Object>> attr = new ArrayList<Map<String,Object>>();
 						if(klgAttrMap.containsKey("keyId") && !klgAttrMap.get("keyId").equals("0")){
 							String keyId = klgAttrMap.get("keyId").toString();
-							if(keyId.contains(".")){
-								keyId = keyId.split(",")[0];
-							}
-							JSONObject templateKeysJson = templateKeyAttrsMap.get(keyId);
-							attrMap.put("keyId", keyId);
-							attrMap.put("value", klgAttrMap.get("value").toString());
-							//判断属性类型，放入对应的值中，方便以后筛选，目前只针对数值和时间做特殊处理，其他均为-1
-							String index = DataType.belongKeyAttrIndex(klgAttrMap.get("dataType").toString());
-							if(!index.equals("-1")){
-//								if(index.equals(IndexRelationConstant.KLG_NUMERIC_INDEX)){
-//									attrMap.put("integerValue", klgAttrMap.get("value").toString());
-//								}
-								
-								if(index.equals(IndexRelationConstant.KLG_DATE_INDEX)){
-									attrMap.put("dateValue", klgAttrMap.get("value").toString());
+							if(templateKeyAttrsMap.containsKey(keyId)){
+								JSONObject templateKeysJson = templateKeyAttrsMap.get(keyId);
+								attrMap.put("keyId", keyId);
+								attrMap.put("value", klgAttrMap.get("value").toString());
+								//判断属性类型，放入对应的值中，方便以后筛选，目前只针对数值和时间做特殊处理，其他均为-1
+								String index = DataType.belongKeyAttrIndex(klgAttrMap.get("dataType").toString());
+								String currentUnit = klgAttrMap.get("currentUnit") == null?"":klgAttrMap.get("currentUnit").toString();
+								try {
+								if(!index.equals("-1")){
+									String value = klgAttrMap.get("value").toString();
+									if(index.equals(IndexRelationConstant.KLG_NUMERIC_INDEX)){
+										attrMap.put("integerValue", Unit.parse(value, currentUnit));
+										attrMap.put("value", Unit.parse(value, currentUnit));
+									}
+									if(index.equals(IndexRelationConstant.KLG_DATE_INDEX)){
+										boolean isDate = DateUtil.isDate(value);
+										if(isDate){
+											attrMap.put("dateValue", DateUtil.simpleDateFormatAll.format(DateUtil.getDateOfHaveAllTime(klgAttrMap.get("value").toString())));
+										}
+									}
 								}
+								} catch (Exception e) {
+									e.printStackTrace();
+								}
+								attrMap.put("currentUnit", currentUnit);
+								attrMap.put("name", templateKeysJson.getString("name"));
+								attrMap.put("displayName", templateKeysJson.getString("displayName"));
+								String templateId = templateKeysJson.getString("templateId");
+//								if(templateId.contains(".")){
+//									templateId = templateId.split(",")[0];
+//								}
+								attrMap.put("templateId", templateId);
+								attr.add(attrMap);
+								//移除无用的value
+								klgAttrMap.remove("value");
+								klgAttrMap.put("attrs", attr);
+								result.put(knowledgeVersionedId, klgAttrMap);
 							}
-							attrMap.put("name", templateKeysJson.getString("name"));
-							attrMap.put("displayName", templateKeysJson.getString("displayName"));
-							String templateId = templateKeysJson.getString("templateId");
-							if(templateId.contains(".")){
-								templateId = templateId.split(",")[0];
-							}
-							attrMap.put("templateId", templateId);
-							attr.add(attrMap);
-							//移除无用的value
-							klgAttrMap.remove("value");
-							klgAttrMap.put("clickNum", "0");
-							klgAttrMap.put("attrs", attr);
 						}
-						result.put(knowledgeVersionedId, klgAttrMap);
 					}
 				}
 			}
@@ -157,7 +178,7 @@ public class MakeKlgAttributesIndexService {
 
 //	public static void main(String[] args) {
 //		List<String> ids = new ArrayList<String>();
-//		ids.add("4483");
+//		ids.add("7734");
 //		getKnowledgeAttr(ids);
 //	}
 }
